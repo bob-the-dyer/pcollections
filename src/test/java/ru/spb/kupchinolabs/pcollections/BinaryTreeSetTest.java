@@ -2,6 +2,7 @@ package ru.spb.kupchinolabs.pcollections;
 
 import org.junit.Test;
 
+import java.io.*;
 import java.util.*;
 
 import static junit.framework.Assert.*;
@@ -19,7 +20,6 @@ public class BinaryTreeSetTest {
 
         List<Integer> initialElements = new ArrayList<>();
         new Random().ints(1000, 0, 1000).forEach(i -> {
-            System.out.println(i);
             if (!initialElements.contains(i)) initialElements.add(i);
             treeSet.insert(i);
         });
@@ -35,7 +35,7 @@ public class BinaryTreeSetTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testBinaryTreeSetNullOnInsert() {
+    public void testBinaryTreeSetInsertNull() {
         IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
         treeSet.insert(null);
     }
@@ -58,7 +58,6 @@ public class BinaryTreeSetTest {
 
     @Test
     public void testBinaryTreeSetInsertContainsDelete() {
-
         IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
         assertTrue(treeSet.insert(1));
         assertTrue(treeSet.insert(2));
@@ -76,13 +75,30 @@ public class BinaryTreeSetTest {
     }
 
     @Test
-    public void testBinaryTreeSetSize() {
+    public void testBinaryTreeSetSerialization() throws IOException, ClassNotFoundException {
         IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
-        treeSet.insert(16);
-        treeSet.insert(10);
-        treeSet.insert(20);
-        assertEquals(3, treeSet.size());
+        treeSet.insert(3);
+        treeSet.insert(1);
+        treeSet.insert(5);
 
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream outputStream = new ObjectOutputStream(baos);
+        outputStream.writeObject(treeSet);
+        outputStream.close();
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream inputStream = new ObjectInputStream(bais);
+        IBinaryTreeSet<Integer> deserializedSet = (IBinaryTreeSet<Integer>) inputStream.readObject();
+
+        assertEquals(treeSet.size(), deserializedSet.size());
+
+        List<Integer> originalElements = new ArrayList<>();
+        treeSet.forEach(originalElements::add);
+
+        List<Integer> deserializedElements = new ArrayList<>();
+        deserializedSet.forEach(deserializedElements::add);
+
+        assertEquals(originalElements, deserializedElements);
     }
 
 }

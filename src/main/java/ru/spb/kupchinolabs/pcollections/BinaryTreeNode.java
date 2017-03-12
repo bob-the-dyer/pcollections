@@ -1,37 +1,39 @@
 package ru.spb.kupchinolabs.pcollections;
 
+import java.io.Serializable;
+
 /**
  * Created by vladimir-k on 12.03.17.
  */
-public class BinaryTreeNode<T extends Comparable<T>> {
+class BinaryTreeNode<T extends Comparable<T> & Serializable> implements Serializable {
 
-    private BinaryTreeNode left;
-    private BinaryTreeNode right;
+    private BinaryTreeNode<T> left;
+    private BinaryTreeNode<T> right;
     private T value;
 
-    public BinaryTreeNode<T> getLeft() {
+    BinaryTreeNode<T> getLeft() {
         return left;
     }
 
-    public BinaryTreeNode<T> setLeft(BinaryTreeNode<T> left) {
+    BinaryTreeNode<T> setLeft(BinaryTreeNode<T> left) {
         this.left = left;
         return this;
     }
 
-    public BinaryTreeNode<T> getRight() {
+    BinaryTreeNode<T> getRight() {
         return right;
     }
 
-    public BinaryTreeNode<T> setRight(BinaryTreeNode<T> right) {
+    BinaryTreeNode<T> setRight(BinaryTreeNode<T> right) {
         this.right = right;
         return this;
     }
 
-    public T getValue() {
+    T getValue() {
         return value;
     }
 
-    public BinaryTreeNode<T> setValue(T value) {
+    BinaryTreeNode<T> setValue(T value) {
         this.value = value;
         return this;
     }

@@ -1,9 +1,11 @@
 package ru.spb.kupchinolabs.pcollections;
 
+import java.io.Serializable;
+
 /**
  * Created by vladimir-k on 12.03.17.
  */
-public interface IBinaryTreeSet<T> extends Iterable<T> {
+public interface IBinaryTreeSet<T> extends Iterable<T>, Serializable {
 
     boolean contains(T element);
 

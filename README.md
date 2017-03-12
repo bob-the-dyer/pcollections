@@ -8,13 +8,15 @@ To build project and run unit tests you need maven to be preinstalled on your ma
 ###General aspects that were considered:
   - Tree usage as an underlying structure for Set vs. Map -> Set
   - Thread safety on modification / copying -> NO
+  - elements of the set should be serializable and comparable types -> YES
   - copy/deep copy/clone objects on insert to preserve tree invariants consistency from external change of inserted elements -> NO
-  - collection friendly (equals, hashCode) -> ???
+  - collection friendly (equals, hashCode) -> NO
   - null elements are allowed -> NO
+  - collection should be serialisation ready -> YES
 
 ###Persistence implementation that was considered:
   - Full persistence vs. Partial -> Full persistence
-  - Full copy on modification vs. minimal required copy of subtrees -> ???
+  - Full copy on modification vs. minimal required copy of subtrees -> Full copy
   
 ###Implementation plan:
   - design, build and test binary tree based Set: contains, insert, remove, size, iterate

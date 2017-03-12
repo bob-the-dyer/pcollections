@@ -1,5 +1,6 @@
 package ru.spb.kupchinolabs.pcollections;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Stack;
@@ -7,7 +8,7 @@ import java.util.Stack;
 /**
  * Created by vladimir-k on 12.03.17.
  */
-public class BinaryTreeSet<T extends Comparable<T>> implements IBinaryTreeSet<T> {
+public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements IBinaryTreeSet<T> {
 
     private BinaryTreeNode<T> rootNode;
 
