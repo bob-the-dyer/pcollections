@@ -1,24 +1,29 @@
 # pcollections
 
-This repo contains implementation of Persistent collection based on Red-Black Tree. 
+This project contains a Persistent Red/Black Tree based implementation of a Set collection. 
 
-To build and run tests you need maven to me installed on your machine:
+To build project and run unit tests you need maven to be preinstalled on your machine:
 #####mvn clean package
 
-###Links for inspiration:
- - https://en.wikipedia.org/wiki/Red–black_tree
- - http://www.cs.cmu.edu/~sleator/papers/another-persistence.pdf
- - https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-854j-advanced-algorithms-fall-2005/lecture-notes/persistent.pdf
- - https://wiki.edinburghhacklab.com/PersistentRedBlackTreeSet
- - https://pcollections.org
- 
-###Persistence implementation to consider:
-  - tree usage as an underlying structure for set vs map -> set
-  - full persistence vs. partial -> full one
-  - full copy on modification vs. minimal required copy of subtrees -> ???
+###General aspects that were considered:
+  - Tree usage as an underlying structure for Set vs Map -> Set
+  - Thread safety on modification / copying -> NO
+
+###Persistence implementation that was considered:
+  - Full persistence vs. Partial -> Full one
+  - Full copy on modification vs. minimal required copy of subtrees -> ???
   
-###Other aspects to consider:
-  - thread safety on modification -> NO
+###Implementation plan:
+  - design, build and test binary tree based Set: search, insert, delete, traverse
+  - "colorize" the Set: add insert/delete recoloring and rebalancing logic to keep RBTree invariants valid
+  - add unit tests to prove RBTree invariants valid on insert/delete  
+  - add persistence and tests   
+      
+###Links for inspiration:
+  - https://en.wikipedia.org/wiki/Red–black_tree
+  - http://www.cs.cmu.edu/~sleator/papers/another-persistence.pdf
+  - https://wiki.edinburghhacklab.com/PersistentRedBlackTreeSet
+  - https://pcollections.org
  
  
 
