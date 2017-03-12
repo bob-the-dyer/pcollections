@@ -31,7 +31,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements IB
     }
 
     public boolean insert(T element) {
-        if (element == null) throw new IllegalArgumentException("null elements are not supported");
+        if (element == null) throw new NullPointerException("null elements are not supported");
         if (rootNode == null) {
             rootNode = new BinaryTreeNode<T>().setValue(element);
             return true;
@@ -64,8 +64,60 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements IB
 
     @Override
     public boolean remove(T element) {
-        //TODO
+        if (element == null) throw new NullPointerException("null elements are not supported");
+        BinaryTreeNode<T> parentNode = null;
+        BinaryTreeNode<T> currentNode = rootNode;
+        boolean lastStepLeft = false;
+        return searchRemoved(element, currentNode, parentNode, lastStepLeft);
+    }
+
+    private boolean searchRemoved(T element, BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode, boolean lastStepLeft) {
+        while (currentNode != null) {
+            T curValue = currentNode.getValue();
+            int compareTo = curValue.compareTo(element);
+            if (compareTo == 0) return remove(element, currentNode, parentNode, lastStepLeft);
+            parentNode = currentNode;
+            if (compareTo < 0) {
+                currentNode = currentNode.getRight();
+                lastStepLeft = false;
+            } else {
+                currentNode = currentNode.getLeft();
+                lastStepLeft = true;
+            }
+        }
         return false;
+    }
+
+    private boolean remove(T element, BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode, boolean lastStepLeft) {
+        if (currentNode.getLeft() == null && currentNode.getRight() == null) { //leaf with no children
+            if (lastStepLeft) {
+                parentNode.setLeft(null);
+            } else {
+                parentNode.setRight(null);
+            }
+            return true;
+        }
+        if (currentNode.getLeft() == null ^ currentNode.getRight() == null) { //leaf with single child
+            BinaryTreeNode<T> child = currentNode.getLeft() == null ? currentNode.getRight() : currentNode.getLeft();
+            if (lastStepLeft) {
+                parentNode.setLeft(child);
+            } else {
+                parentNode.setRight(child);
+            }
+            return true;
+        }
+        if (currentNode.getLeft() != null && currentNode.getRight() != null) {//leaf with both children
+            T maxFromLeft = maximum(currentNode.getLeft());
+            currentNode.setValue(maxFromLeft);
+            return searchRemoved(maxFromLeft, currentNode.getLeft(), currentNode, true);
+        }
+        throw new IllegalStateException("we shouldn't get here ever");
+    }
+
+    private T maximum(BinaryTreeNode<T> node) {
+        BinaryTreeNode<T> maxNode = node;
+        while (maxNode.getRight() != null) maxNode = maxNode.getRight();
+        return maxNode.getValue();
     }
 
     public int size() {
@@ -128,6 +180,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements IB
         }
 
         class BinaryTreeNodeStep {
+
             final Step step;
             final BinaryTreeNode<T> node;
 
@@ -145,5 +198,5 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements IB
     }
 
 
-    //TODO add equals and hashCode to support collection friendliness
+//TODO add equals and hashCode to support collection friendliness if required
 }

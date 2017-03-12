@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.io.*;
 import java.util.*;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 /**
  * Created by vladimir-k on 12.03.17.
@@ -13,7 +13,7 @@ import static junit.framework.Assert.*;
 public class BinaryTreeSetTest {
 
     @Test
-    public void testBinaryTreeSetOrdering() {
+    public void testOrdering() {
 
         IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
@@ -34,21 +34,27 @@ public class BinaryTreeSetTest {
         assertEquals(initialElements, traversedElements);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testBinaryTreeSetInsertNull() {
+    @Test(expected = NullPointerException.class)
+    public void testInsertNull() {
         IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
         treeSet.insert(null);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testRemoveNull() {
+        IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+        treeSet.remove(null);
+    }
+
     @Test(expected = UnsupportedOperationException.class)
-    public void testBinaryTreeSetRemoveViaIterator() {
+    public void testRemoveViaIterator() {
         IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         treeSet.iterator().remove();
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void testBinaryTreeSetIteratorNextOnEmptyTree() {
+    public void testIteratorNextOnEmptyTree() {
         IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         Iterator<Integer> iterator = treeSet.iterator();
@@ -57,7 +63,7 @@ public class BinaryTreeSetTest {
     }
 
     @Test
-    public void testBinaryTreeSetInsertContainsDelete() {
+    public void testInsertContainsDelete() {
         IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
         assertTrue(treeSet.insert(1));
         assertTrue(treeSet.insert(2));
@@ -75,7 +81,7 @@ public class BinaryTreeSetTest {
     }
 
     @Test
-    public void testBinaryTreeSetSerialization() throws IOException, ClassNotFoundException {
+    public void testSerialization() throws IOException, ClassNotFoundException {
         IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
         treeSet.insert(3);
         treeSet.insert(1);
@@ -99,6 +105,29 @@ public class BinaryTreeSetTest {
         deserializedSet.forEach(deserializedElements::add);
 
         assertEquals(originalElements, deserializedElements);
+    }
+
+    @Test
+    public void testStochasticRemoval(){
+        List<Integer> elements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        for (int i = 0; i < 1000; i++) {
+            Collections.shuffle(elements);
+            IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+            elements.forEach(treeSet::insert);
+            assertTrue(treeSet.remove(5));
+            List<Integer> traversedElements = new ArrayList<>();
+            treeSet.forEach(traversedElements::add);
+            assertEquals(Arrays.asList(1, 2, 3, 4, 6, 7, 8, 9, 10), traversedElements);
+        }
+    }
+
+    @Test
+    public void testEmpty(){
+        IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+        assertEquals(0, treeSet.size());
+        assertFalse(treeSet.remove(5));
+        assertFalse(treeSet.contains(5));
+        assertFalse(treeSet.iterator().hasNext());
     }
 
 }
