@@ -8,21 +8,20 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 /**
- * Created by vladimir-k on 12.03.17.
+ * Created by vladimir-k on 15.03.17.
  */
-public class BinaryTreeSetTest {
+public class PersistenceBinaryTreeTest {
 
     @Test
-    public void testOrdering() {
+    public void testBaseOperations() {
 
-        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
-        assertEquals(0, treeSet.size());
-
+        final PersistentSet<Integer>[] treeSetArr = new PersistentSet[]{new PersistentBinaryTreeSet()};
         List<Integer> initialElements = new ArrayList<>();
         new Random().ints(1000, 0, 1000).forEach(i -> {
             if (!initialElements.contains(i)) initialElements.add(i);
-            treeSet.insert(i);
+            treeSetArr[0] = treeSetArr[0].insert(i);
         });
+        PersistentSet<Integer> treeSet = treeSetArr[0];
 
         assertEquals(initialElements.size(), treeSet.size());
 
@@ -36,26 +35,26 @@ public class BinaryTreeSetTest {
 
     @Test(expected = NullPointerException.class)
     public void testInsertNull() {
-        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
+        PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         treeSet.insert(null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testRemoveNull() {
-        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
+        PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         treeSet.remove(null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testRemoveViaIterator() {
-        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
+        PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         treeSet.iterator().remove();
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testIteratorNextOnEmptyTree() {
-        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
+        PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         Iterator<Integer> iterator = treeSet.iterator();
         assertFalse(iterator.hasNext());
@@ -65,32 +64,34 @@ public class BinaryTreeSetTest {
     @Test
     public void testInsertContainsDeleteStochastic() {
         for (int i = 0; i < 1000; i++) {
-            SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
             List<Integer> initialElements = Arrays.asList(1, 2, 3, 5);
             Collections.shuffle(initialElements);
-            initialElements.forEach( e -> assertTrue(treeSet.insert(e)));
+            final PersistentSet<Integer>[] treeSetArr = new PersistentSet[]{new PersistentBinaryTreeSet()};
+            initialElements.forEach(e -> {
+                treeSetArr[0] = treeSetArr[0].insert(e);
+            });
+            PersistentSet<Integer> treeSet = treeSetArr[0];
 
             assertFalse(treeSet.contains(8));
 
-            assertFalse(treeSet.insert(1));
+            int sizeBefore = treeSet.size();
+            treeSet = treeSet.insert(1);
+            assertEquals(sizeBefore, treeSet.size());
 
             assertTrue(treeSet.contains(5));
-            assertTrue(treeSet.remove(5));
+            treeSet = treeSet.remove(5);
             assertFalse(treeSet.contains(5));
-            assertFalse(treeSet.remove(5));
 
-            assertTrue(treeSet.remove(1));
-            assertTrue(treeSet.remove(2));
-            assertTrue(treeSet.remove(3));
+            sizeBefore = treeSet.size();
+            treeSet = treeSet.remove(5);
+            assertEquals(sizeBefore, treeSet.size());
         }
     }
 
     @Test
     public void testSerialization() throws IOException, ClassNotFoundException {
-        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
-        treeSet.insert(3);
-        treeSet.insert(1);
-        treeSet.insert(5);
+        PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
+        treeSet = treeSet.insert(3).insert(1).insert(5);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream outputStream = new ObjectOutputStream(baos);
@@ -99,7 +100,7 @@ public class BinaryTreeSetTest {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream inputStream = new ObjectInputStream(bais);
-        SimpleSet<Integer> deserializedSet = (SimpleSet<Integer>) inputStream.readObject();
+        PersistentSet<Integer> deserializedSet = (PersistentSet<Integer>) inputStream.readObject();
 
         assertEquals(treeSet.size(), deserializedSet.size());
 
@@ -113,13 +114,16 @@ public class BinaryTreeSetTest {
     }
 
     @Test
-    public void testStochasticRemoval(){
+    public void testStochasticRemoval() {
         List<Integer> elements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         for (int i = 0; i < 100000; i++) {
             Collections.shuffle(elements);
-            SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
-            elements.forEach(treeSet::insert);
-            assertTrue(treeSet.remove(5));
+            final PersistentSet<Integer>[] treeSetArr = new PersistentSet[]{new PersistentBinaryTreeSet()};
+            elements.forEach(e -> {
+                treeSetArr[0] = treeSetArr[0].insert(e);
+            });
+            PersistentSet<Integer> treeSet = treeSetArr[0];
+            treeSet = treeSet.remove(5);
             List<Integer> traversedElements = new ArrayList<>();
             treeSet.forEach(traversedElements::add);
             assertEquals(Arrays.asList(1, 2, 3, 4, 6, 7, 8, 9, 10), traversedElements);
@@ -127,12 +131,30 @@ public class BinaryTreeSetTest {
     }
 
     @Test
-    public void testEmpty(){
-        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
+    public void testEmpty() {
+        PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         assertEquals(0, treeSet.size());
-        assertFalse(treeSet.remove(5));
+        treeSet = treeSet.remove(5);
         assertFalse(treeSet.contains(5));
         assertFalse(treeSet.iterator().hasNext());
+    }
+
+    @Test
+    public void testPersistence() {
+        PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
+        PersistentSet<Integer> treeSet1 = treeSet.insert(1);
+
+        assertEquals(0, treeSet.size());
+        assertEquals(1, treeSet1.size());
+        assertFalse(treeSet.contains(1));
+        assertTrue(treeSet1.contains(1));
+
+        PersistentSet<Integer> treeSet0 = treeSet1.remove(1);
+
+        assertEquals(0, treeSet0.size());
+        assertEquals(1, treeSet1.size());
+        assertFalse(treeSet0.contains(1));
+        assertTrue(treeSet1.contains(1));
     }
 
 }

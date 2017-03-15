@@ -14,8 +14,8 @@ See unit tests for more examples of PersistentRedBlackTreeSet usage
 ###General aspects that were considered:
   - Tree usage as an underlying structure for Set vs. Map -> Set
   - Thread safety on modification / copying -> NO
-  - elements of the set should be serializable and comparable types -> YES
-  - copy/deep copy/clone objects on insert to preserve tree invariants consistency from external change of inserted elements -> NO
+  - elements of the set should be serializable(->YES), cloneable(->NO) and comparable(->YES) types
+  - clone/copy objects on insert to preserve tree invariants consistency from external change of inserted elements -> NO
   - collection friendly (equals, hashCode) -> NO
   - null elements are allowed -> NO
   - collection should be serialisation ready -> YES

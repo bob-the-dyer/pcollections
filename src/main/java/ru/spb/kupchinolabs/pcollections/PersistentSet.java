@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by vladimir-k on 13.03.17.
  */
-public interface PersistentSet<T> extends Iterable<T>, Serializable {
+public interface PersistentSet<T> extends Iterable<T> {
 
     boolean contains(T element);
 

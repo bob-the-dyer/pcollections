@@ -8,7 +8,7 @@ import java.util.Stack;
 /**
  * Created by vladimir-k on 12.03.17.
  */
-public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements SimpleSet<T> {
+public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements SimpleSet<T>, Serializable {
 
     private BinaryTreeNode<T> rootNode;
 
@@ -62,7 +62,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
     @Override
     public boolean remove(T element) {
         if (element == null) throw new NullPointerException("null elements are not supported");
-        BinaryTreeNode<T> parentNode = null;
+        BinaryTreeNode<T> parentNode = rootNode;
         BinaryTreeNode<T> currentNode = rootNode;
         boolean lastStepLeft = false;
         return searchRemovable(element, currentNode, parentNode, lastStepLeft);
@@ -87,7 +87,9 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
 
     private boolean remove(BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode, boolean lastStepLeft) {
         if (currentNode.getLeft() == null && currentNode.getRight() == null) { //leaf with no children
-            if (lastStepLeft) {
+            if (parentNode == currentNode) {
+                rootNode = null;
+            } else if (lastStepLeft) {
                 parentNode.setLeft(null);
             } else {
                 parentNode.setRight(null);
@@ -96,7 +98,9 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
         }
         if (currentNode.getLeft() == null ^ currentNode.getRight() == null) { //leaf with single child
             BinaryTreeNode<T> child = currentNode.getLeft() == null ? currentNode.getRight() : currentNode.getLeft();
-            if (lastStepLeft) {
+            if (parentNode == currentNode) {
+                rootNode = child;
+            } else if (lastStepLeft) {
                 parentNode.setLeft(child);
             } else {
                 parentNode.setRight(child);
