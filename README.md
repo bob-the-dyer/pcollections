@@ -30,9 +30,9 @@ See unit tests for more examples of PersistentRedBlackTreeSet usage
 ### Implementation plan:
 
   - design, build and test binary tree based Set: contains, insert, remove, size, iterate - V
-  - add persistence for binary tree and tests - IN PROGRESS
-  - "colorize" the Set: add insert/delete recoloring and rebalancing logic to keep RBTree invariants valid
-  - add unit tests to prove RBTree invariants valid on insert/delete  
+  - add persistence for binary tree and tests - V
+  - "colorize" the Set: add insert/delete recoloring and rebalancing logic to keep RBTree invariants valid - IN PROGRESS
+  - add unit tests to prove RBTree invariants valid on insert/delete - IN PROGRESS  
   - add persistence for RBTree and tests   
   - benchmarking (?)
       
