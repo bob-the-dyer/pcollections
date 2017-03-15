@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class PersistenceBinaryTreeTest {
 
     @Test
-    public void testBaseOperations() {
+    public void testOrdering() {
 
         final PersistentSet<Integer>[] treeSetArr = new PersistentSet[]{new PersistentBinaryTreeSet()};
         List<Integer> initialElements = new ArrayList<>();
@@ -66,6 +66,7 @@ public class PersistenceBinaryTreeTest {
         for (int i = 0; i < 1000; i++) {
             List<Integer> initialElements = Arrays.asList(1, 2, 3, 5);
             Collections.shuffle(initialElements);
+
             final PersistentSet<Integer>[] treeSetArr = new PersistentSet[]{new PersistentBinaryTreeSet()};
             initialElements.forEach(e -> {
                 treeSetArr[0] = treeSetArr[0].insert(e);
