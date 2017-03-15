@@ -1,9 +1,15 @@
 # pcollections
 
-This project contains a Persistent Set collection based on a Red/Black Tree implementation. 
+This project contains a Persistent Set implementations based on:
+  - an ordinary binary tree 
+  - a Red-Black tree
 
 To build project and run unit tests you need maven to be preinstalled on your machine:
 #####mvn clean package
+
+###Main usage example
+TODO here to add 3 lines of code for PersistentRedBlackTreeSet usage
+See unit tests for more examples of PersistentRedBlackTreeSet usage
 
 ###General aspects that were considered:
   - Tree usage as an underlying structure for Set vs. Map -> Set
@@ -19,10 +25,12 @@ To build project and run unit tests you need maven to be preinstalled on your ma
   - Full copy on modification vs. minimal required copy of subtrees -> Full copy
   
 ###Implementation plan:
-  - design, build and test binary tree based Set: contains, insert, remove, size, iterate
+  - design, build and test binary tree based Set: contains, insert, remove, size, iterate - V
+  - add persistence for binary tree and tests - IN PROGRESS
   - "colorize" the Set: add insert/delete recoloring and rebalancing logic to keep RBTree invariants valid
   - add unit tests to prove RBTree invariants valid on insert/delete  
-  - add persistence and tests   
+  - add persistence for RBTree and tests   
+  - benchmarking (?)
       
 ###Links for inspiration:
   - https://en.wikipedia.org/wiki/Red–black_tree

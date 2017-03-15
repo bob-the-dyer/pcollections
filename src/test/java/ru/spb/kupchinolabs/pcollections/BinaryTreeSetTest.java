@@ -15,7 +15,7 @@ public class BinaryTreeSetTest {
     @Test
     public void testOrdering() {
 
-        IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
 
         List<Integer> initialElements = new ArrayList<>();
@@ -36,26 +36,26 @@ public class BinaryTreeSetTest {
 
     @Test(expected = NullPointerException.class)
     public void testInsertNull() {
-        IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         treeSet.insert(null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testRemoveNull() {
-        IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         treeSet.remove(null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testRemoveViaIterator() {
-        IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         treeSet.iterator().remove();
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testIteratorNextOnEmptyTree() {
-        IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         Iterator<Integer> iterator = treeSet.iterator();
         assertFalse(iterator.hasNext());
@@ -64,7 +64,7 @@ public class BinaryTreeSetTest {
 
     @Test
     public void testInsertContainsDelete() {
-        IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         assertTrue(treeSet.insert(1));
         assertTrue(treeSet.insert(2));
         assertTrue(treeSet.insert(3));
@@ -82,7 +82,7 @@ public class BinaryTreeSetTest {
 
     @Test
     public void testSerialization() throws IOException, ClassNotFoundException {
-        IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         treeSet.insert(3);
         treeSet.insert(1);
         treeSet.insert(5);
@@ -94,7 +94,7 @@ public class BinaryTreeSetTest {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream inputStream = new ObjectInputStream(bais);
-        IBinaryTreeSet<Integer> deserializedSet = (IBinaryTreeSet<Integer>) inputStream.readObject();
+        SimpleSet<Integer> deserializedSet = (SimpleSet<Integer>) inputStream.readObject();
 
         assertEquals(treeSet.size(), deserializedSet.size());
 
@@ -112,7 +112,7 @@ public class BinaryTreeSetTest {
         List<Integer> elements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         for (int i = 0; i < 1000; i++) {
             Collections.shuffle(elements);
-            IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+            SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
             elements.forEach(treeSet::insert);
             assertTrue(treeSet.remove(5));
             List<Integer> traversedElements = new ArrayList<>();
@@ -123,7 +123,7 @@ public class BinaryTreeSetTest {
 
     @Test
     public void testEmpty(){
-        IBinaryTreeSet<Integer> treeSet = new BinaryTreeSet<>();
+        SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         assertFalse(treeSet.remove(5));
         assertFalse(treeSet.contains(5));

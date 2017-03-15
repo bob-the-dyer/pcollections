@@ -8,15 +8,12 @@ import java.util.Stack;
 /**
  * Created by vladimir-k on 12.03.17.
  */
-public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements IBinaryTreeSet<T> {
+public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements SimpleSet<T> {
 
     private BinaryTreeNode<T> rootNode;
 
     public boolean contains(T element) {
-        return contains(element, rootNode);
-    }
-
-    private boolean contains(T element, BinaryTreeNode<T> node) {
+        BinaryTreeNode<T> node = rootNode;
         while (node != null) {
             T curValue = node.getValue();
             int compareTo = curValue.compareTo(element);
@@ -68,14 +65,14 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements IB
         BinaryTreeNode<T> parentNode = null;
         BinaryTreeNode<T> currentNode = rootNode;
         boolean lastStepLeft = false;
-        return searchRemoved(element, currentNode, parentNode, lastStepLeft);
+        return searchRemovable(element, currentNode, parentNode, lastStepLeft);
     }
 
-    private boolean searchRemoved(T element, BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode, boolean lastStepLeft) {
+    private boolean searchRemovable(T element, BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode, boolean lastStepLeft) {
         while (currentNode != null) {
             T curValue = currentNode.getValue();
             int compareTo = curValue.compareTo(element);
-            if (compareTo == 0) return remove(element, currentNode, parentNode, lastStepLeft);
+            if (compareTo == 0) return remove(currentNode, parentNode, lastStepLeft);
             parentNode = currentNode;
             if (compareTo < 0) {
                 currentNode = currentNode.getRight();
@@ -88,7 +85,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements IB
         return false;
     }
 
-    private boolean remove(T element, BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode, boolean lastStepLeft) {
+    private boolean remove(BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode, boolean lastStepLeft) {
         if (currentNode.getLeft() == null && currentNode.getRight() == null) { //leaf with no children
             if (lastStepLeft) {
                 parentNode.setLeft(null);
@@ -106,10 +103,10 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements IB
             }
             return true;
         }
-        if (currentNode.getLeft() != null && currentNode.getRight() != null) {//leaf with both children
+        if (currentNode.getLeft() != null && currentNode.getRight() != null) { //leaf with both children
             T maxFromLeft = maximum(currentNode.getLeft());
             currentNode.setValue(maxFromLeft);
-            return searchRemoved(maxFromLeft, currentNode.getLeft(), currentNode, true);
+            return searchRemovable(maxFromLeft, currentNode.getLeft(), currentNode, true);
         }
         throw new IllegalStateException("we shouldn't get here ever");
     }
