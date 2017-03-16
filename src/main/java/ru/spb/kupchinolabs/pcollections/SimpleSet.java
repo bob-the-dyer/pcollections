@@ -13,4 +13,6 @@ public interface SimpleSet<T> extends Iterable<T> {
 
     int size();
 
+    //TODO consider adding convenience methods like 'removeAll', 'containsAll' and clear
+
 }

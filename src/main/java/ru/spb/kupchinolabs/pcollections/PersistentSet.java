@@ -14,4 +14,9 @@ public interface PersistentSet<T> extends Iterable<T> {
     PersistentSet<T> remove(T element);
 
     int size();
+
+    //TODO consider adding convenience methods like 'empty', 'singleton' and 'from(final Collection<? extends T> list)'
+    //TODO consider rename 'insert' to 'plus' and 'remove' to 'minus'
+    //TODO consider adding convenience methods like 'plusAll' and 'minusAll'
+
 }

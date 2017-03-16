@@ -199,5 +199,6 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
     }
 
 
-//TODO add equals and hashCode to support collection friendliness if required
+    //TODO consider adding equals and hashCode to support collection friendliness
+    //TODO consider adding constructor with Comparator to support elements which do not implement Comparable
 }

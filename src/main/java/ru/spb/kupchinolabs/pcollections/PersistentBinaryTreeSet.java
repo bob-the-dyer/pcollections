@@ -11,10 +11,6 @@ import java.util.List;
  */
 public class PersistentBinaryTreeSet<T extends Comparable<T> & Serializable> implements PersistentSet<T>, Serializable {
 
-    //TODO consider adding convenience methods like 'empty', 'singleton' and 'from(final Collection<? extends T> list)'
-    //TODO consider rename 'insert' to 'plus' and 'remove' to 'minus'
-    //TODO consider adding convenience methods like 'plusAll' and 'minusAll'
-
     private SimpleSet<T> treeSet;
 
     private PersistentBinaryTreeSet(SimpleSet<T> treeSet) {

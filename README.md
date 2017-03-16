@@ -9,13 +9,15 @@ To build project and run unit tests you need maven to be preinstalled on your ma
 
 ### Main usage example
 
+TODO here to add 3 lines of code for BinaryTreeSet usage
 TODO here to add 3 lines of code for PersistentRedBlackTreeSet usage
-See unit tests for more examples of PersistentRedBlackTreeSet usage
+
+See unit tests for more examples of BinaryTreeSet and PersistentRedBlackTreeSet usage
 
 ### General aspects that were considered:
 
-  - Tree usage as an underlying structure for Set vs. Map -> Set
-  - Thread safety on modification / copying -> NO
+  - tree usage as an underlying structure for Set vs. Map -> Set
+  - thread safety on modification / copying -> NO
   - elements of the set should be serializable(->YES), cloneable(->NO) and comparable(->YES) types
   - clone/copy objects on insert to preserve tree invariants consistency from external change of inserted elements -> NO
   - collection friendly (equals, hashCode) -> NO
@@ -24,8 +26,8 @@ See unit tests for more examples of PersistentRedBlackTreeSet usage
 
 ### Persistence implementation that was considered:
 
-  - Full persistence vs. Partial -> Full persistence
-  - Full copy on modification vs. minimal required copy of subtrees -> Full copy
+  - full persistence vs. partial -> full persistence
+  - full copy on modification vs. minimal required copy of subtrees -> full copy
   
 ### Implementation plan:
 
@@ -34,7 +36,9 @@ See unit tests for more examples of PersistentRedBlackTreeSet usage
   - "colorize" the Set: add insert/delete recoloring and rebalancing logic to keep RBTree invariants valid - IN PROGRESS
   - add unit tests to prove RBTree invariants valid on insert/delete - IN PROGRESS  
   - add persistence for RBTree and tests   
-  - benchmarking (?)
+  - benchmarking
+  - interfaces refactoring, adding convenience methods, see TODOs (?)
+  - javadocs (?)
       
 ### Links for inspiration:
 
@@ -43,6 +47,3 @@ See unit tests for more examples of PersistentRedBlackTreeSet usage
   - https://wiki.edinburghhacklab.com/PersistentRedBlackTreeSet
   - https://pcollections.org
   - https://github.com/google/guava
- 
- 
-
