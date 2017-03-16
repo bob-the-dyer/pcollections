@@ -28,6 +28,7 @@ public class PersistentBinaryTreeSet<T extends Comparable<T> & Serializable> imp
 
     @Override
     public PersistentSet<T> insert(T element) {
+        //TODO consider cloning element
         SimpleSet<T> newTreeSet = deepCopy(this.treeSet);
         newTreeSet.insert(element);
         return new PersistentBinaryTreeSet<>(newTreeSet);

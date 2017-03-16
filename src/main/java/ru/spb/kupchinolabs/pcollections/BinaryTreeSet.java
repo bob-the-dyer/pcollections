@@ -29,8 +29,22 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
 
     public boolean insert(T element) {
         if (element == null) throw new NullPointerException("null elements are not supported");
+        T newElement = element;
+//TODO consider cloning element
+//        try {
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            ObjectOutputStream outputStream = new ObjectOutputStream(baos);
+//            outputStream.writeObject(element);
+//            outputStream.close();
+//
+//            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+//            ObjectInputStream inputStream = new ObjectInputStream(bais);
+//            newElement = (T) inputStream.readObject();
+//        } catch (Exception e) {
+//            throw new IllegalStateException("fail in cloning element " + element + " via serialization/deserialization", e);
+//        }
         if (rootNode == null) {
-            rootNode = new BinaryTreeNode<T>().setValue(element);
+            rootNode = new BinaryTreeNode<T>().setValue(newElement);
             return true;
         } else {
             BinaryTreeNode<T> parentNode = null;
@@ -38,7 +52,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
             boolean lastStepLeft = false;
             while (currentNode != null) {
                 T curValue = currentNode.getValue();
-                int compareTo = curValue.compareTo(element);
+                int compareTo = curValue.compareTo(newElement);
                 if (compareTo == 0) return false;
                 parentNode = currentNode;
                 if (compareTo < 0) {
@@ -49,7 +63,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
                     lastStepLeft = true;
                 }
             }
-            BinaryTreeNode<T> newNode = new BinaryTreeNode<T>().setValue(element);
+            BinaryTreeNode<T> newNode = new BinaryTreeNode<T>().setValue(newElement);
             if (lastStepLeft) {
                 parentNode.setLeft(newNode);
             } else {

@@ -18,5 +18,6 @@ public interface PersistentSet<T> extends Iterable<T> {
     //TODO consider adding convenience methods like 'empty', 'singleton' and 'from(final Collection<? extends T> list)'
     //TODO consider rename 'insert' to 'plus' and 'remove' to 'minus'
     //TODO consider adding convenience methods like 'plusAll' and 'minusAll'
+    //TODO consider adding convenience methods like 'union', 'difference' and 'intersection'
 
 }
