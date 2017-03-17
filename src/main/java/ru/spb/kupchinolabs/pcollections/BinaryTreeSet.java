@@ -29,20 +29,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
 
     public boolean insert(T element) {
         if (element == null) throw new NullPointerException("null elements are not supported");
-        T newElement = element;
-//TODO consider cloning element
-//        try {
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            ObjectOutputStream outputStream = new ObjectOutputStream(baos);
-//            outputStream.writeObject(element);
-//            outputStream.close();
-//
-//            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-//            ObjectInputStream inputStream = new ObjectInputStream(bais);
-//            newElement = (T) inputStream.readObject();
-//        } catch (Exception e) {
-//            throw new IllegalStateException("fail in cloning element " + element + " via serialization/deserialization", e);
-//        }
+        T newElement = cloneElement(element);
         if (rootNode == null) {
             rootNode = new BinaryTreeNode<T>().setValue(newElement);
             return true;
@@ -197,6 +184,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
         class BinaryTreeNodeStep {
 
             final Step step;
+
             final BinaryTreeNode<T> node;
 
             BinaryTreeNodeStep(Step step, BinaryTreeNode<T> node) {
@@ -208,11 +196,29 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
 
     }
 
+
     private enum Step {
-        LEFT, RIGHT, VISIT
+        LEFT, RIGHT, VISIT;
+
     }
 
+    private T cloneElement(T element) {
+        //TODO consider cloning element
+//        try {
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            ObjectOutputStream outputStream = new ObjectOutputStream(baos);
+//            outputStream.writeObject(element);
+//            outputStream.close();
+//
+//            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+//            ObjectInputStream inputStream = new ObjectInputStream(bais);
+//            newElement = (T) inputStream.readObject();
+//        } catch (Exception e) {
+//            throw new IllegalStateException("fail in cloning element " + element + " via serialization/deserialization", e);
+//        }
+        return element;
+    }
 
-    //TODO consider adding equals and hashCode to support collection friendliness
     //TODO consider adding constructor with Comparator to support elements which do not implement Comparable
+    //TODO consider adding equals and hashCode to support collection friendliness
 }

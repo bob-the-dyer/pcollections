@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class PersistenceBinaryTreeTest {
 
     @Test
-    public void testOrdering() {
+    public void ordering() {
 
         final PersistentSet<Integer>[] treeSetArr = new PersistentSet[]{new PersistentBinaryTreeSet()};
         List<Integer> initialElements = new ArrayList<>();
@@ -34,26 +34,26 @@ public class PersistenceBinaryTreeTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testInsertNull() {
+    public void insertNull() {
         PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         treeSet.insert(null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testRemoveNull() {
+    public void removeNull() {
         PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         treeSet.remove(null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testRemoveViaIterator() {
+    public void removeViaIterator() {
         PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         treeSet.iterator().remove();
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void testIteratorNextOnEmptyTree() {
+    public void iteratorNextOnEmptyTree() {
         PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         Iterator<Integer> iterator = treeSet.iterator();
@@ -62,7 +62,7 @@ public class PersistenceBinaryTreeTest {
     }
 
     @Test
-    public void testInsertContainsDeleteStochastic() {
+    public void insertContainsDeleteStochastic() {
         for (int i = 0; i < 1000; i++) {
             List<Integer> initialElements = Arrays.asList(1, 2, 3, 5);
             Collections.shuffle(initialElements);
@@ -90,7 +90,7 @@ public class PersistenceBinaryTreeTest {
     }
 
     @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
+    public void serialization() throws IOException, ClassNotFoundException {
         PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         treeSet = treeSet.insert(3).insert(1).insert(5);
 
@@ -115,7 +115,7 @@ public class PersistenceBinaryTreeTest {
     }
 
     @Test
-    public void testStochasticRemoval() {
+    public void stochasticRemoval() {
         List<Integer> elements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         for (int i = 0; i < 100000; i++) {
             Collections.shuffle(elements);
@@ -132,7 +132,7 @@ public class PersistenceBinaryTreeTest {
     }
 
     @Test
-    public void testEmpty() {
+    public void empty() {
         PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         treeSet = treeSet.remove(5);
@@ -141,7 +141,7 @@ public class PersistenceBinaryTreeTest {
     }
 
     @Test
-    public void testPersistence() {
+    public void persistence() {
         PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
         PersistentSet<Integer> treeSet1 = treeSet.insert(1);
 

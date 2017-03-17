@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class BinaryTreeSetTest {
 
     @Test
-    public void testOrdering() {
+    public void ordering() {
 
         SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
@@ -35,26 +35,26 @@ public class BinaryTreeSetTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testInsertNull() {
+    public void insertNull() {
         SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         treeSet.insert(null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testRemoveNull() {
+    public void removeNull() {
         SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         treeSet.remove(null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testRemoveViaIterator() {
+    public void removeViaIterator() {
         SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         treeSet.iterator().remove();
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void testIteratorNextOnEmptyTree() {
+    public void iteratorNextOnEmptyTree() {
         SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         Iterator<Integer> iterator = treeSet.iterator();
@@ -63,7 +63,7 @@ public class BinaryTreeSetTest {
     }
 
     @Test
-    public void testInsertContainsDeleteStochastic() {
+    public void insertContainsDeleteStochastic() {
         for (int i = 0; i < 1000; i++) {
             SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
             List<Integer> initialElements = Arrays.asList(1, 2, 3, 5);
@@ -86,7 +86,7 @@ public class BinaryTreeSetTest {
     }
 
     @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
+    public void serialization() throws IOException, ClassNotFoundException {
         SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         treeSet.insert(3);
         treeSet.insert(1);
@@ -113,7 +113,7 @@ public class BinaryTreeSetTest {
     }
 
     @Test
-    public void testStochasticRemoval(){
+    public void stochasticRemoval(){
         List<Integer> elements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         for (int i = 0; i < 100000; i++) {
             Collections.shuffle(elements);
@@ -127,7 +127,7 @@ public class BinaryTreeSetTest {
     }
 
     @Test
-    public void testEmpty(){
+    public void empty(){
         SimpleSet<Integer> treeSet = new BinaryTreeSet<>();
         assertEquals(0, treeSet.size());
         assertFalse(treeSet.remove(5));
