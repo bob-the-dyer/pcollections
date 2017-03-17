@@ -1,7 +1,5 @@
 package ru.spb.kupchinolabs.pcollections;
 
-import java.io.Serializable;
-
 /**
  * Created by vladimir-k on 13.03.17.
  */

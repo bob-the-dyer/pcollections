@@ -28,8 +28,8 @@ class BinaryTreeNode<T extends Comparable<T> & Serializable> implements Serializ
         this.right = right;
     }
 
-    Optional<T> getValue() {
-        return Optional.ofNullable(value);
+    T getValue() {
+        return value;
     }
 
     void setValue(T value) {

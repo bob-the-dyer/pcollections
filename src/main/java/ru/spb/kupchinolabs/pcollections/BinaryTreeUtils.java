@@ -35,12 +35,11 @@ class BinaryTreeUtils {
     }
 
     static <T extends Comparable<T> & Serializable> void repaintAndRebalance(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> currentNode) {
-
+        //TODO later
     }
 
     static <T extends Comparable<T> & Serializable> T cloneElement(T element) {
-        //TODO consider cloning element this way or another
-//        try {
+//        try { //TODO consider cloning element this way or another
 //            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //            ObjectOutputStream outputStream = new ObjectOutputStream(baos);
 //            outputStream.writeObject(element);
@@ -62,7 +61,7 @@ class BinaryTreeUtils {
     static <T extends Comparable<T> & Serializable> T maximum(BinaryTreeNode<T> node) {
         BinaryTreeNode<T> maxNode = node;
         while (maxNode.getRight().isPresent()) maxNode = maxNode.getRight().get();
-        return maxNode.getValue().get();
+        return maxNode.getValue();
     }
 
     static <T extends Comparable<T> & Serializable> boolean insertElement(BinaryTreeNode<T> rootNode, T newElement,
@@ -72,7 +71,7 @@ class BinaryTreeUtils {
         BinaryTreeNode<T> currentNode = rootNode;
         boolean lastStepLeft = false;
         while (currentNode != null) {
-            T curValue = currentNode.getValue().get();
+            T curValue = currentNode.getValue();
             int compareTo = curValue.compareTo(newElement);
             if (compareTo == 0) return false;
             parentNode = currentNode;

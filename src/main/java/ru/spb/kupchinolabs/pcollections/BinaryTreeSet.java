@@ -16,7 +16,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
     public boolean contains(T element) {
         BinaryTreeNode<T> node = rootNode;
         while (node != null) {
-            T curValue = node.getValue().get();
+            T curValue = node.getValue();
             int compareTo = curValue.compareTo(element);
             if (compareTo == 0) return true;
             if (compareTo < 0) {
@@ -52,7 +52,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
 
     private boolean searchRemovable(T element, BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode, boolean lastStepLeft) {
         while (currentNode != null) {
-            T curValue = currentNode.getValue().get();
+            T curValue = currentNode.getValue();
             int compareTo = curValue.compareTo(element);
             if (compareTo == 0) return remove(currentNode, parentNode, lastStepLeft);
             parentNode = currentNode;

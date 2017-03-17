@@ -13,7 +13,7 @@ class InOrderTreeSetIterator<T extends Comparable<T> & Serializable> implements 
     private Stack<TreeNodeStep> stack = new Stack<>();
 
     InOrderTreeSetIterator(BinaryTreeNode<T> rootNode) {
-        if (rootNode != null && rootNode.getValue().isPresent()) {
+        if (rootNode != null) {
             if (rootNode.getRight().isPresent()) {
                 stack.push(new TreeNodeStep(Step.RIGHT, rootNode));
             }
@@ -51,7 +51,7 @@ class InOrderTreeSetIterator<T extends Comparable<T> & Serializable> implements 
             }
             curStep = stack.pop();
         }
-        return curStep.node.getValue().get();
+        return curStep.node.getValue();
     }
 
     class TreeNodeStep {
