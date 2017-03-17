@@ -6,40 +6,21 @@ import java.util.Optional;
 /**
  * Created by vladimir-k on 16.03.17.
  */
-class RedBlackTreeNode<T extends Comparable<T> & Serializable> extends TreeNode<T> implements Serializable {
+class RedBlackTreeNode<T extends Comparable<T> & Serializable> extends BinaryTreeNode<T> implements Serializable {
 
-    private RedBlackTreeNode<T> parent;
-    private RedBlackTreeNode<T> left;
-    private RedBlackTreeNode<T> right;
+    private BinaryTreeNode<T> parent;
     private RedBlackTreeNodeColor color;
-    private T value;
 
     RedBlackTreeNode() {
         this.color = RedBlackTreeNodeColor.RED;
     }
 
-    Optional<RedBlackTreeNode<T>> getParent() {
+    Optional<BinaryTreeNode<T>> getParent() {
         return Optional.ofNullable(parent);
     }
 
-    void setParent(RedBlackTreeNode<T> parent) {
+    void setParent(BinaryTreeNode<T> parent) {
         this.parent = parent;
-    }
-
-    Optional<RedBlackTreeNode<T>> getLeft() {
-        return Optional.ofNullable(left);
-    }
-
-    void setLeft(RedBlackTreeNode<T> left) {
-        this.left = left;
-    }
-
-    Optional<RedBlackTreeNode<T>> getRight() {
-        return Optional.ofNullable(right);
-    }
-
-    void setRight(RedBlackTreeNode<T> right) {
-        this.right = right;
     }
 
     RedBlackTreeNodeColor getColor() {
@@ -50,12 +31,4 @@ class RedBlackTreeNode<T extends Comparable<T> & Serializable> extends TreeNode<
         this.color = color;
     }
 
-    Optional<T> getValue() {
-        return Optional.ofNullable(value);
-    }
-
-    RedBlackTreeNode<T> setValue(T value) {
-        this.value = value;
-        return this;
-    }
 }
