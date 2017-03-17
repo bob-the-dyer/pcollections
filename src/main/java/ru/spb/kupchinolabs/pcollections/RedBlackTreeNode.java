@@ -6,7 +6,7 @@ import java.util.Optional;
 /**
  * Created by vladimir-k on 16.03.17.
  */
-class RedBlackTreeNode<T extends Comparable<T> & Serializable> implements Serializable {
+class RedBlackTreeNode<T extends Comparable<T> & Serializable> extends TreeNode<T> implements Serializable {
 
     private RedBlackTreeNode<T> parent;
     private RedBlackTreeNode<T> left;

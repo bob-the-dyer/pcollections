@@ -15,13 +15,13 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
     public boolean contains(T element) {
         BinaryTreeNode<T> node = rootNode;
         while (node != null) {
-            T curValue = node.getValue();
+            T curValue = node.getValue().get();
             int compareTo = curValue.compareTo(element);
             if (compareTo == 0) return true;
             if (compareTo < 0) {
-                node = node.getRight();
+                node = node.getRight().orElse(null);
             } else {
-                node = node.getLeft();
+                node = node.getLeft().orElse(null);
             }
         }
         return false;
@@ -38,15 +38,15 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
             BinaryTreeNode<T> currentNode = rootNode;
             boolean lastStepLeft = false;
             while (currentNode != null) {
-                T curValue = currentNode.getValue();
+                T curValue = currentNode.getValue().get();
                 int compareTo = curValue.compareTo(newElement);
                 if (compareTo == 0) return false;
                 parentNode = currentNode;
                 if (compareTo < 0) {
-                    currentNode = currentNode.getRight();
+                    currentNode = currentNode.getRight().orElse(null);
                     lastStepLeft = false;
                 } else {
-                    currentNode = currentNode.getLeft();
+                    currentNode = currentNode.getLeft().orElse(null);
                     lastStepLeft = true;
                 }
             }
@@ -71,15 +71,15 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
 
     private boolean searchRemovable(T element, BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode, boolean lastStepLeft) {
         while (currentNode != null) {
-            T curValue = currentNode.getValue();
+            T curValue = currentNode.getValue().get();
             int compareTo = curValue.compareTo(element);
             if (compareTo == 0) return remove(currentNode, parentNode, lastStepLeft);
             parentNode = currentNode;
             if (compareTo < 0) {
-                currentNode = currentNode.getRight();
+                currentNode = currentNode.getRight().orElse(null);
                 lastStepLeft = false;
             } else {
-                currentNode = currentNode.getLeft();
+                currentNode = currentNode.getLeft().orElse(null);
                 lastStepLeft = true;
             }
         }
@@ -87,7 +87,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
     }
 
     private boolean remove(BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode, boolean lastStepLeft) {
-        if (currentNode.getLeft() == null && currentNode.getRight() == null) { //leaf with no children
+        if (!currentNode.getLeft().isPresent() && !currentNode.getRight().isPresent()) { //leaf with no children
             if (parentNode == currentNode) {
                 rootNode = null;
             } else if (lastStepLeft) {
@@ -97,8 +97,8 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
             }
             return true;
         }
-        if (currentNode.getLeft() == null ^ currentNode.getRight() == null) { //leaf with single child
-            BinaryTreeNode<T> child = currentNode.getLeft() == null ? currentNode.getRight() : currentNode.getLeft();
+        if (currentNode.getLeft().isPresent() ^ currentNode.getRight().isPresent()) { //leaf with single child
+            BinaryTreeNode<T> child = currentNode.getLeft().isPresent() ? currentNode.getLeft().get() : currentNode.getRight().get();
             if (parentNode == currentNode) {
                 rootNode = child;
             } else if (lastStepLeft) {
@@ -108,18 +108,18 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
             }
             return true;
         }
-        if (currentNode.getLeft() != null && currentNode.getRight() != null) { //leaf with both children
-            T maxFromLeft = maximum(currentNode.getLeft());
+        if (currentNode.getLeft().isPresent() && currentNode.getRight().isPresent()) { //leaf with both children
+            T maxFromLeft = maximum(currentNode.getLeft().get());
             currentNode.setValue(maxFromLeft);
-            return searchRemovable(maxFromLeft, currentNode.getLeft(), currentNode, true);
+            return searchRemovable(maxFromLeft, currentNode.getLeft().get(), currentNode, true);
         }
         throw new IllegalStateException("we shouldn't get here ever");
     }
 
     private T maximum(BinaryTreeNode<T> node) {
         BinaryTreeNode<T> maxNode = node;
-        while (maxNode.getRight() != null) maxNode = maxNode.getRight();
-        return maxNode.getValue();
+        while (maxNode.getRight().isPresent()) maxNode = maxNode.getRight().get();
+        return maxNode.getValue().get();
     }
 
     public int size() {
@@ -140,12 +140,12 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
         Stack<BinaryTreeNodeStep> stack = new Stack<>();
 
         BinaryTreeSetIterator() {
-            if (rootNode != null && rootNode.getValue() != null) {
-                if (rootNode.getRight() != null) {
+            if (rootNode != null && rootNode.getValue().isPresent()) {
+                if (rootNode.getRight().isPresent()) {
                     stack.push(new BinaryTreeNodeStep(Step.RIGHT, rootNode));
                 }
                 stack.push(new BinaryTreeNodeStep(Step.VISIT, rootNode));
-                if (rootNode.getLeft() != null) {
+                if (rootNode.getLeft().isPresent()) {
                     stack.push(new BinaryTreeNodeStep(Step.LEFT, rootNode));
                 }
             }
@@ -163,22 +163,22 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
             while (curStep.step != Step.VISIT) {
                 BinaryTreeNode<T> childNode;
                 if (curStep.step == Step.LEFT) {
-                    childNode = curStep.node.getLeft();
+                    childNode = curStep.node.getLeft().orElse(null);
                 } else {
-                    childNode = curStep.node.getRight();
+                    childNode = curStep.node.getRight().orElse(null);
                 }
                 if (childNode != null) {
-                    if (childNode.getRight() != null) {
+                    if (childNode.getRight().isPresent()) {
                         stack.push(new BinaryTreeNodeStep(Step.RIGHT, childNode));
                     }
                     stack.push(new BinaryTreeNodeStep(Step.VISIT, childNode));
-                    if (childNode.getLeft() != null) {
+                    if (childNode.getLeft().isPresent()) {
                         stack.push(new BinaryTreeNodeStep(Step.LEFT, childNode));
                     }
                 }
                 curStep = stack.pop();
             }
-            return curStep.node.getValue();
+            return curStep.node.getValue().get();
         }
 
         class BinaryTreeNodeStep {

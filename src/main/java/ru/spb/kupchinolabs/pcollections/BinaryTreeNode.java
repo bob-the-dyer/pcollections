@@ -1,18 +1,19 @@
 package ru.spb.kupchinolabs.pcollections;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * Created by vladimir-k on 12.03.17.
  */
-class BinaryTreeNode<T extends Comparable<T> & Serializable> implements Serializable {
+class BinaryTreeNode<T extends Comparable<T> & Serializable> extends TreeNode<T> implements Serializable {
 
     private BinaryTreeNode<T> left;
     private BinaryTreeNode<T> right;
     private T value;
 
-    BinaryTreeNode<T> getLeft() {
-        return left;
+    Optional<BinaryTreeNode<T>> getLeft() {
+        return Optional.ofNullable(left);
     }
 
     BinaryTreeNode<T> setLeft(BinaryTreeNode<T> left) {
@@ -20,8 +21,8 @@ class BinaryTreeNode<T extends Comparable<T> & Serializable> implements Serializ
         return this;
     }
 
-    BinaryTreeNode<T> getRight() {
-        return right;
+    Optional<BinaryTreeNode<T>> getRight() {
+        return Optional.ofNullable(right);
     }
 
     BinaryTreeNode<T> setRight(BinaryTreeNode<T> right) {
@@ -29,8 +30,8 @@ class BinaryTreeNode<T extends Comparable<T> & Serializable> implements Serializ
         return this;
     }
 
-    T getValue() {
-        return value;
+    Optional<T> getValue() {
+        return Optional.ofNullable(value);
     }
 
     BinaryTreeNode<T> setValue(T value) {
