@@ -12,6 +12,7 @@ import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.searchAndRemove;
 public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements SimpleSet<T>, Serializable {
 
     BinaryTreeNode<T> rootNode;
+    private int size = 0;
 
     public boolean contains(T element) {
         return BinaryTreeUtils.contains(element, rootNode);
@@ -22,25 +23,34 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
         T newElement = cloneElement(element);
         if (BinaryTreeUtils.treeIsEmpty(this)) {
             BinaryTreeUtils.insertRoot(this, newElement);
+            size++;
             return true;
         } else {
             BinaryTreeNode<T> newNode = new BinaryTreeNode<T>();
-            return BinaryTreeUtils.insertElement(rootNode, newElement, () -> newNode, parentNode -> {
+            boolean inserted = BinaryTreeUtils.insertElement(rootNode, newElement, () -> newNode, parentNode -> {
             });
+            if (inserted) {
+                size++;
+            }
+            return inserted;
         }
     }
 
     @Override
     public boolean remove(T element) {
         if (element == null) throw new NullPointerException("null elements are not supported");
-        return searchAndRemove(newRoot -> {
+        boolean removed = searchAndRemove(newRoot -> {
             this.rootNode = newRoot;
         }, element, rootNode, rootNode, false, parentOfRemoved -> {
         });
+        if (removed) {
+            size--;
+        }
+        return removed;
     }
 
     public int size() {
-        return BinaryTreeUtils.size(this);
+        return size;
     }
 
     @Override

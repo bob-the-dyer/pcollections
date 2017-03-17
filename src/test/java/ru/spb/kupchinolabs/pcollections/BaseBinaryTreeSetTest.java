@@ -17,9 +17,8 @@ abstract public class BaseBinaryTreeSetTest {
     @Test
     public void ordering() {
         assertEquals(0, treeSet.size());
-
         List<Integer> initialElements = new ArrayList<>();
-        new Random().ints(1000, 0, 1000).forEach(i -> {
+        new Random().ints(10000, 0, 1000).forEach(i -> {
             if (!initialElements.contains(i)) initialElements.add(i);
             treeSet.insert(i);
         });
@@ -32,6 +31,9 @@ abstract public class BaseBinaryTreeSetTest {
         treeSet.forEach(traversedElements::add);
 
         assertEquals(initialElements, traversedElements);
+
+        initialElements.forEach(treeSet::remove);
+        assertEquals(0, treeSet.size());
     }
 
     @Test(expected = NullPointerException.class)
@@ -110,15 +112,15 @@ abstract public class BaseBinaryTreeSetTest {
     @Test
     public void stochasticRemoval() {
         List<Integer> initialElements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        List<Integer> etalonElements = Arrays.asList(1, 2, 3, 4, 6, 7, 8, 9, 10);
+        List<Integer> expectedElements = Arrays.asList(1, 2, 3, 4, 6, 7, 8, 9, 10);
         for (int i = 0; i < 100000; i++) {
             Collections.shuffle(initialElements);
             initialElements.forEach(treeSet::insert);
             assertTrue(treeSet.remove(5));
             List<Integer> traversedElements = new ArrayList<>();
             treeSet.forEach(traversedElements::add);
-            assertEquals(etalonElements, traversedElements);
-            etalonElements.forEach(treeSet::remove);
+            assertEquals(expectedElements, traversedElements);
+            expectedElements.forEach(treeSet::remove);
         }
     }
 

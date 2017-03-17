@@ -106,14 +106,6 @@ class BinaryTreeUtils {
         return true;
     }
 
-    static <T extends Comparable<T> & Serializable> int size(SimpleSet<T> ts) {
-        final int[] size = {0};
-        ts.forEach(i -> {
-            size[0]++;
-        });
-        return size[0];
-    }
-
     static <T extends Comparable<T> & Serializable> boolean searchAndRemove(Consumer<BinaryTreeNode<T>> rootNodeConsumer, T element,
                                                                             BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode,
                                                                             boolean lastStepLeft, Consumer<BinaryTreeNode<T>> parentConsumer) {

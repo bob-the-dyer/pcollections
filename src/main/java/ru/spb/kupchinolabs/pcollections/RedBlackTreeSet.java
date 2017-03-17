@@ -11,6 +11,7 @@ import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.*;
 public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements SimpleSet<T>, Serializable {
 
     RedBlackTreeNode<T> rootNode;
+    private int size = 0;
 
     @Override
     public boolean contains(T element) {
@@ -23,31 +24,40 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
         T newElement = cloneElement(element);
         if (BinaryTreeUtils.treeIsEmpty(this)) {
             BinaryTreeUtils.insertRoot(this, newElement);
+            size++;
             return true;
         } else {
             RedBlackTreeNode<T> newNode = new RedBlackTreeNode<T>();
-            return BinaryTreeUtils.insertElement(rootNode, newElement, () -> newNode, parentNode -> {
+            boolean inserted = BinaryTreeUtils.insertElement(rootNode, newElement, () -> newNode, parentNode -> {
                 newNode.setParent(parentNode);
                 repaintAndRebalanceOnInsert(this, newNode);
                 validateTree(this, newNode); //TODO later move out to test code
             });
+            if (inserted){
+                size++;
+            }
+            return inserted;
         }
     }
 
     @Override
     public boolean remove(T element) {
         if (element == null) throw new NullPointerException("null elements are not supported");
-        return searchAndRemove(newRoot -> {
+        boolean removed = searchAndRemove(newRoot -> {
             this.rootNode = (RedBlackTreeNode<T>) newRoot;
         }, element, rootNode, rootNode, false, parentOfRemoved -> {
             repaintAndRebalanceOnRemove(this, (RedBlackTreeNode<T>) parentOfRemoved);
             validateTree(this, (RedBlackTreeNode<T>) parentOfRemoved); //TODO later move out to test code
         });
+        if (removed){
+            size--;
+        }
+        return removed;
     }
 
     @Override
     public int size() {
-        return BinaryTreeUtils.size(this);
+        return size;
     }
 
     @Override
