@@ -3,8 +3,7 @@ package ru.spb.kupchinolabs.pcollections;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.cloneElement;
-import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.repaintAndRebalance;
+import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.*;
 
 /**
  * Created by vladimir-k on 16.03.17.
@@ -15,7 +14,7 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
 
     @Override
     public boolean contains(T element) {
-        return false;
+        return BinaryTreeUtils.contains(element, rootNode);
     }
 
     @Override
@@ -29,14 +28,21 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
             RedBlackTreeNode<T> newNode = new RedBlackTreeNode<T>();
             return BinaryTreeUtils.insertElement(rootNode, newElement, () -> newNode, parentNode -> {
                 newNode.setParent(parentNode);
-                repaintAndRebalance(this, newNode);
+                repaintAndRebalanceOnInsert(this, newNode);
+                validateTree(this, newNode); //TODO later move out to test code
             });
         }
     }
 
     @Override
     public boolean remove(T element) {
-        return false;
+        if (element == null) throw new NullPointerException("null elements are not supported");
+        return searchAndRemove(newRoot -> {
+            this.rootNode = (RedBlackTreeNode<T>) newRoot;
+        }, element, rootNode, rootNode, false, parentOfRemoved -> {
+            repaintAndRebalanceOnRemove(this, (RedBlackTreeNode<T>) parentOfRemoved);
+            validateTree(this, (RedBlackTreeNode<T>) parentOfRemoved); //TODO later move out to test code
+        });
     }
 
     @Override

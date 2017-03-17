@@ -54,6 +54,12 @@ class InOrderTreeSetIterator<T extends Comparable<T> & Serializable> implements 
         return curStep.node.getValue();
     }
 
+    enum Step {
+        LEFT,
+        VISIT,
+        RIGHT;
+    }
+
     class TreeNodeStep {
 
         final Step step;
@@ -65,12 +71,6 @@ class InOrderTreeSetIterator<T extends Comparable<T> & Serializable> implements 
             this.node = node;
         }
 
-    }
-
-    enum Step {
-        LEFT,
-        VISIT,
-        RIGHT;
     }
 
 }

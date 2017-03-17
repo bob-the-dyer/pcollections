@@ -34,7 +34,15 @@ class BinaryTreeUtils {
         ts.rootNode = node;
     }
 
-    static <T extends Comparable<T> & Serializable> void repaintAndRebalance(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> currentNode) {
+    static <T extends Comparable<T> & Serializable> void repaintAndRebalanceOnInsert(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> currentNode) {
+        //TODO later
+    }
+
+    static <T extends Comparable<T> & Serializable> void repaintAndRebalanceOnRemove(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> parentOfRemoved) {
+        //TODO later
+    }
+
+    static <T extends Comparable<T> & Serializable> void validateTree(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> changedNode) {
         //TODO later
     }
 
@@ -104,6 +112,75 @@ class BinaryTreeUtils {
             size[0]++;
         });
         return size[0];
+    }
+
+    static <T extends Comparable<T> & Serializable> boolean searchAndRemove(Consumer<BinaryTreeNode<T>> rootNodeConsumer, T element,
+                                                                            BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode,
+                                                                            boolean lastStepLeft, Consumer<BinaryTreeNode<T>> parentConsumer) {
+        while (currentNode != null) {
+            T curValue = currentNode.getValue();
+            int compareTo = curValue.compareTo(element);
+            if (compareTo == 0) return remove(rootNodeConsumer, currentNode, parentNode, lastStepLeft, parentConsumer);
+            parentNode = currentNode;
+            if (compareTo < 0) {
+                currentNode = currentNode.getRight().orElse(null);
+                lastStepLeft = false;
+            } else {
+                currentNode = currentNode.getLeft().orElse(null);
+                lastStepLeft = true;
+            }
+        }
+        return false;
+    }
+
+    private static <T extends Comparable<T> & Serializable> boolean remove(Consumer<BinaryTreeNode<T>> rootNodeConsumer,
+                                                                           BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode,
+                                                                           boolean lastStepLeft, Consumer<BinaryTreeNode<T>> parentConsumer) {
+        if (!currentNode.getLeft().isPresent() && !currentNode.getRight().isPresent()) { //leaf with no children
+            if (parentNode == currentNode) {
+                rootNodeConsumer.accept(null);
+            } else if (lastStepLeft) {
+                parentNode.setLeft(null);
+            } else {
+                parentNode.setRight(null);
+            }
+            parentConsumer.accept(parentNode);
+            return true;
+        }
+        if (currentNode.getLeft().isPresent() ^ currentNode.getRight().isPresent()) { //leaf with single child
+            BinaryTreeNode<T> child = currentNode.getLeft().isPresent() ? currentNode.getLeft().get() : currentNode.getRight().get();
+            if (parentNode == currentNode) {
+                rootNodeConsumer.accept(child);
+            } else if (lastStepLeft) {
+                parentNode.setLeft(child);
+            } else {
+                parentNode.setRight(child);
+            }
+            parentConsumer.accept(parentNode);
+            return true;
+        }
+        if (currentNode.getLeft().isPresent() && currentNode.getRight().isPresent()) { //leaf with both children
+            BinaryTreeNode<T> leftChild = currentNode.getLeft().get();
+            T maxFromLeft = maximum(leftChild);
+            currentNode.setValue(maxFromLeft);
+            return searchAndRemove(rootNodeConsumer, maxFromLeft, leftChild, currentNode, true, parentConsumer);
+        }
+        throw new IllegalStateException("we shouldn't get here ever");
+    }
+
+    static <T extends Comparable<T> & Serializable> boolean contains(T element, BinaryTreeNode<T> rootNode) {
+        BinaryTreeNode<T> node = rootNode;
+        while (node != null) {
+            T curValue = node.getValue();
+            int compareTo = curValue.compareTo(element);
+            if (compareTo == 0) return true;
+            if (compareTo < 0) {
+                node = node.getRight().orElse(null);
+            } else {
+                node = node.getLeft().orElse(null);
+            }
+        }
+        return false;
     }
 
 
