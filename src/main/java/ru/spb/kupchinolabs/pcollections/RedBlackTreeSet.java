@@ -2,6 +2,7 @@ package ru.spb.kupchinolabs.pcollections;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.Stack;
 
 import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.*;
 import static ru.spb.kupchinolabs.pcollections.RedBlackTreeNodeColor.BLACK;
@@ -30,6 +31,8 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
             node.setColor(BLACK);
             rootNode = node;
             size++;
+            repaintAndRebalanceOnInsert(this, rootNode);
+            validateTree(this, rootNode); //TODO later move out to test code
             return true;
         } else {
             RedBlackTreeNode<T> newNode = new RedBlackTreeNode<T>();
@@ -70,4 +73,14 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
     public Iterator<T> iterator() {
         return new InOrderTreeSetIterator<T>(rootNode);
     }
+
+    @Override
+    public String toString() {
+        Stack<RedBlackTreeNode<T>> stack = new Stack<>();
+        stack.push(rootNode);
+        return "RBTS{\n" +
+                buildWidthTraverseString(stack) +
+                "}";
+    }
+
 }

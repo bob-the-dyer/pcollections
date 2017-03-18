@@ -1,10 +1,12 @@
 package ru.spb.kupchinolabs.pcollections;
 
 import java.io.Serializable;
+import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static ru.spb.kupchinolabs.pcollections.RedBlackTreeNodeColor.BLACK;
+import static ru.spb.kupchinolabs.pcollections.RedBlackTreeNodeColor.RED;
 
 /**
  * Created by vladimir-k on 16.03.17.
@@ -150,45 +152,61 @@ class BinaryTreeUtils {
     static <T extends Comparable<T> & Serializable> void validateTree(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> changedNode) {
         if (ts.rootNode == null) return;
         validateRootIsBlack(ts);
-        validateEachRedNodeHasBlackChildrenRecursively(ts.rootNode);
-        validateSameBlackDepthRecursively(ts.rootNode);
+        validateEachRedNodeHasBlackChildrenRecursively(ts.rootNode, ts);
+        validateSameBlackDepthRecursively(ts.rootNode, ts);
     }
 
     private static <T extends Comparable<T> & Serializable> void validateRootIsBlack(RedBlackTreeSet<T> ts) {
         if (ts.rootNode.getColor() != BLACK)
-            throw new IllegalStateException("violation of RBTree property on node " + ts.rootNode + " : root should be black");
+            throw new IllegalStateException("violation of RBTree property on node " + ts.rootNode + " : root should be black, " + ts);
     }
 
-    private static <T extends Comparable<T> & Serializable> void validateEachRedNodeHasBlackChildrenRecursively(RedBlackTreeNode<T> node) {
-        if (node.getColor() != RedBlackTreeNodeColor.RED) return;
+    private static <T extends Comparable<T> & Serializable> void validateEachRedNodeHasBlackChildrenRecursively(RedBlackTreeNode<T> node, RedBlackTreeSet<T> ts) {
         if (node.getLeft().isPresent()) {
             RedBlackTreeNode<T> leftChild = (RedBlackTreeNode<T>) node.getLeft().get();
-            if (leftChild.getColor() != BLACK) {
-                throw new IllegalStateException("violation of RBTree property " + node + ": each red node should have black children");
+            if (node.getColor() == RED && leftChild.getColor() != BLACK) {
+                throw new IllegalStateException("violation of RBTree property " + node + ": each red node should have black children, " + ts);
             }
-            validateEachRedNodeHasBlackChildrenRecursively(leftChild);
+            validateEachRedNodeHasBlackChildrenRecursively(leftChild, ts);
         }
         if (node.getRight().isPresent()) {
             RedBlackTreeNode<T> rightChild = (RedBlackTreeNode<T>) node.getRight().get();
-            if (rightChild.getColor() != BLACK) {
-                throw new IllegalStateException("violation of RBTree property on node " + node + " : each red node should have black children");
+            if (node.getColor() == RED && rightChild.getColor() != BLACK) {
+                throw new IllegalStateException("violation of RBTree property on node " + node + " : each red node should have black children, " + ts);
             }
-            validateEachRedNodeHasBlackChildrenRecursively(rightChild);
+            validateEachRedNodeHasBlackChildrenRecursively(rightChild, ts);
         }
     }
 
-    private static <T extends Comparable<T> & Serializable> int validateSameBlackDepthRecursively(RedBlackTreeNode<T> node) {
+    private static <T extends Comparable<T> & Serializable> int validateSameBlackDepthRecursively(RedBlackTreeNode<T> node, RedBlackTreeSet<T> ts) {
         if (null == node) {
             return 0;
         } else {
-            int blackDepthLeft = validateSameBlackDepthRecursively((RedBlackTreeNode<T>) node.getLeft().orElse(null));
-            int blackDepthRight = validateSameBlackDepthRecursively((RedBlackTreeNode<T>) node.getRight().orElse(null));
+            int blackDepthLeft = validateSameBlackDepthRecursively((RedBlackTreeNode<T>) node.getLeft().orElse(null), ts);
+            int blackDepthRight = validateSameBlackDepthRecursively((RedBlackTreeNode<T>) node.getRight().orElse(null), ts);
             if (blackDepthLeft != blackDepthRight) {
-                throw new IllegalStateException("violation of RBTree property on node " + node + " : black depth differs " + blackDepthLeft + "(left) vs. " + blackDepthRight);
+                throw new IllegalStateException("violation of RBTree property on node " + node + " : black depth differs " + blackDepthLeft + "(left) vs. " + blackDepthRight + ", " + ts);
             } else {
                 return (node.getColor() == BLACK ? 1 : 0) + blackDepthLeft;
             }
         }
+    }
+
+    static <T extends Comparable<T> & Serializable> String buildWidthTraverseString(Stack<RedBlackTreeNode<T>> stack) {
+        if (stack.isEmpty()) return "";
+        RedBlackTreeNode<T> topNode = stack.pop();
+        StringBuilder builder = new StringBuilder();
+        builder.append(topNode.getValue()).append(topNode.getColor() == RED ? "R" : "B").append(" ");
+        if (stack.isEmpty()) builder.append("\n");
+        builder.append(buildWidthTraverseString(stack));
+        if (topNode.getRight().isPresent()) {
+            stack.push((RedBlackTreeNode<T>) topNode.getRight().get());
+        }
+        if (topNode.getLeft().isPresent()) {
+            stack.push((RedBlackTreeNode<T>) topNode.getLeft().get());
+        }
+        builder.append(buildWidthTraverseString(stack));
+        return builder.toString();
     }
 
 
