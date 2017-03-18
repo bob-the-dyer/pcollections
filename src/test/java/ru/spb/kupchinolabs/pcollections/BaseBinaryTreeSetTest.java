@@ -18,7 +18,7 @@ abstract public class BaseBinaryTreeSetTest {
     public void ordering() {
         assertEquals(0, treeSet.size());
         List<Integer> initialElements = new ArrayList<>();
-        new Random().ints(10000, 0, 1000).forEach(i -> {
+        new Random().ints(1000, 0, 1000).forEach(i -> {
             if (!initialElements.contains(i)) initialElements.add(i);
             treeSet.insert(i);
         });
@@ -110,7 +110,7 @@ abstract public class BaseBinaryTreeSetTest {
     }
 
     @Test
-    public void stochasticRemoval() {
+    public void stochasticRemovalOfSingleElement() {
         List<Integer> initialElements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         List<Integer> expectedElements = Arrays.asList(1, 2, 3, 4, 6, 7, 8, 9, 10);
         for (int i = 0; i < 100000; i++) {

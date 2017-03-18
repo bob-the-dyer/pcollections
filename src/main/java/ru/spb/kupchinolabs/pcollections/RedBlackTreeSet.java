@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.*;
+import static ru.spb.kupchinolabs.pcollections.RedBlackTreeNodeColor.BLACK;
 
 /**
  * Created by vladimir-k on 16.03.17.
  */
 public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements SimpleSet<T>, Serializable {
 
-    RedBlackTreeNode<T> rootNode;
+    private RedBlackTreeNode<T> rootNode;
     private int size = 0;
 
     @Override
@@ -22,8 +23,12 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
     public boolean insert(final T element) {
         if (element == null) throw new NullPointerException("null elements are not supported");
         T newElement = cloneElement(element);
-        if (BinaryTreeUtils.treeIsEmpty(this)) {
-            BinaryTreeUtils.insertRoot(this, newElement);
+        if (rootNode == null) {
+            RedBlackTreeNode<T> node = new RedBlackTreeNode<>();
+            node.setValue(newElement);
+            node.setParent(null);
+            node.setColor(BLACK);
+            rootNode = node;
             size++;
             return true;
         } else {
@@ -33,7 +38,7 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
                 repaintAndRebalanceOnInsert(this, newNode);
                 validateTree(this, newNode); //TODO later move out to test code
             });
-            if (inserted){
+            if (inserted) {
                 size++;
             }
             return inserted;
@@ -49,7 +54,7 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
             repaintAndRebalanceOnRemove(this, (RedBlackTreeNode<T>) parentOfRemoved);
             validateTree(this, (RedBlackTreeNode<T>) parentOfRemoved); //TODO later move out to test code
         });
-        if (removed){
+        if (removed) {
             size--;
         }
         return removed;

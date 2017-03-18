@@ -4,50 +4,15 @@ import java.io.Serializable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static ru.spb.kupchinolabs.pcollections.RedBlackTreeNodeColor.BLACK;
-
 /**
  * Created by vladimir-k on 16.03.17.
  */
 class BinaryTreeUtils {
 
-    static <T extends Comparable<T> & Serializable> boolean treeIsEmpty(RedBlackTreeSet<T> ts) {
-        return ts.rootNode == null;
-    }
-
-    static <T extends Comparable<T> & Serializable> void insertRoot(BinaryTreeSet<T> ts, T element) {
-        if (!treeIsEmpty(ts)) {
-            throw new IllegalStateException("inserting root for not empty tree");
-        }
-        ts.rootNode = new BinaryTreeNode<T>();
-        ts.rootNode.setValue(element);
-    }
-
-    static <T extends Comparable<T> & Serializable> void insertRoot(RedBlackTreeSet<T> ts, T element) {
-        if (!treeIsEmpty(ts)) {
-            throw new IllegalStateException("inserting root for not empty tree");
-        }
-        RedBlackTreeNode<T> node = new RedBlackTreeNode<>();
-        node.setValue(element);
-        node.setParent(null);
-        node.setColor(BLACK);
-        ts.rootNode = node;
-    }
-
-    static <T extends Comparable<T> & Serializable> void repaintAndRebalanceOnInsert(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> currentNode) {
-        //TODO later
-    }
-
-    static <T extends Comparable<T> & Serializable> void repaintAndRebalanceOnRemove(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> parentOfRemoved) {
-        //TODO later
-    }
-
-    static <T extends Comparable<T> & Serializable> void validateTree(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> changedNode) {
-        //TODO later
-    }
-
     static <T extends Comparable<T> & Serializable> T cloneElement(T element) {
-//        try { //TODO consider cloning element this way or another
+        //TODO consider cloning element this way (via serialization/deserialization) or another
+        //disabling for now as of significant performance degradation
+//        try {
 //            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //            ObjectOutputStream outputStream = new ObjectOutputStream(baos);
 //            outputStream.writeObject(element);
@@ -62,11 +27,7 @@ class BinaryTreeUtils {
         return element;
     }
 
-    static <T extends Comparable<T> & Serializable> boolean treeIsEmpty(BinaryTreeSet<T> ts) {
-        return ts.rootNode == null;
-    }
-
-    static <T extends Comparable<T> & Serializable> T maximum(BinaryTreeNode<T> node) {
+    private static <T extends Comparable<T> & Serializable> T maximum(BinaryTreeNode<T> node) {
         BinaryTreeNode<T> maxNode = node;
         while (maxNode.getRight().isPresent()) maxNode = maxNode.getRight().get();
         return maxNode.getValue();
@@ -106,13 +67,14 @@ class BinaryTreeUtils {
         return true;
     }
 
-    static <T extends Comparable<T> & Serializable> boolean searchAndRemove(Consumer<BinaryTreeNode<T>> rootNodeConsumer, T element,
+    static <T extends Comparable<T> & Serializable> boolean searchAndRemove(Consumer<BinaryTreeNode<T>> rootNodeSetter, T element,
                                                                             BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode,
-                                                                            boolean lastStepLeft, Consumer<BinaryTreeNode<T>> parentConsumer) {
+                                                                            boolean lastStepLeft, Consumer<BinaryTreeNode<T>> parentNodeModifier) {
         while (currentNode != null) {
             T curValue = currentNode.getValue();
             int compareTo = curValue.compareTo(element);
-            if (compareTo == 0) return remove(rootNodeConsumer, currentNode, parentNode, lastStepLeft, parentConsumer);
+            if (compareTo == 0)
+                return remove(rootNodeSetter, currentNode, parentNode, lastStepLeft, parentNodeModifier);
             parentNode = currentNode;
             if (compareTo < 0) {
                 currentNode = currentNode.getRight().orElse(null);
@@ -125,37 +87,37 @@ class BinaryTreeUtils {
         return false;
     }
 
-    private static <T extends Comparable<T> & Serializable> boolean remove(Consumer<BinaryTreeNode<T>> rootNodeConsumer,
+    private static <T extends Comparable<T> & Serializable> boolean remove(Consumer<BinaryTreeNode<T>> rootNodeSetter,
                                                                            BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode,
-                                                                           boolean lastStepLeft, Consumer<BinaryTreeNode<T>> parentConsumer) {
+                                                                           boolean lastStepLeft, Consumer<BinaryTreeNode<T>> parentNodeModifier) {
         if (!currentNode.getLeft().isPresent() && !currentNode.getRight().isPresent()) { //leaf with no children
             if (parentNode == currentNode) {
-                rootNodeConsumer.accept(null);
+                rootNodeSetter.accept(null);
             } else if (lastStepLeft) {
                 parentNode.setLeft(null);
             } else {
                 parentNode.setRight(null);
             }
-            parentConsumer.accept(parentNode);
+            parentNodeModifier.accept(parentNode);
             return true;
         }
         if (currentNode.getLeft().isPresent() ^ currentNode.getRight().isPresent()) { //leaf with single child
             BinaryTreeNode<T> child = currentNode.getLeft().isPresent() ? currentNode.getLeft().get() : currentNode.getRight().get();
             if (parentNode == currentNode) {
-                rootNodeConsumer.accept(child);
+                rootNodeSetter.accept(child);
             } else if (lastStepLeft) {
                 parentNode.setLeft(child);
             } else {
                 parentNode.setRight(child);
             }
-            parentConsumer.accept(parentNode);
+            parentNodeModifier.accept(parentNode);
             return true;
         }
         if (currentNode.getLeft().isPresent() && currentNode.getRight().isPresent()) { //leaf with both children
             BinaryTreeNode<T> leftChild = currentNode.getLeft().get();
             T maxFromLeft = maximum(leftChild);
             currentNode.setValue(maxFromLeft);
-            return searchAndRemove(rootNodeConsumer, maxFromLeft, leftChild, currentNode, true, parentConsumer);
+            return searchAndRemove(rootNodeSetter, maxFromLeft, leftChild, currentNode, true, parentNodeModifier);
         }
         throw new IllegalStateException("we shouldn't get here ever");
     }
@@ -173,6 +135,18 @@ class BinaryTreeUtils {
             }
         }
         return false;
+    }
+
+    static <T extends Comparable<T> & Serializable> void repaintAndRebalanceOnInsert(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> currentNode) {
+        //TODO later
+    }
+
+    static <T extends Comparable<T> & Serializable> void repaintAndRebalanceOnRemove(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> parentOfRemoved) {
+        //TODO later
+    }
+
+    static <T extends Comparable<T> & Serializable> void validateTree(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> changedNode) {
+        //TODO later
     }
 
 
