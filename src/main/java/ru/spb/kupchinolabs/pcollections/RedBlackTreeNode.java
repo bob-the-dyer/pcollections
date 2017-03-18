@@ -8,18 +8,18 @@ import java.util.Optional;
  */
 class RedBlackTreeNode<T extends Comparable<T> & Serializable> extends BinaryTreeNode<T> implements Serializable {
 
-    private BinaryTreeNode<T> parent;
+    private RedBlackTreeNode<T> parent;
     private RedBlackTreeNodeColor color;
 
     RedBlackTreeNode() {
         this.color = RedBlackTreeNodeColor.RED;
     }
 
-    Optional<BinaryTreeNode<T>> getParent() {
+    Optional<RedBlackTreeNode<T>> getParent() {
         return Optional.ofNullable(parent);
     }
 
-    void setParent(BinaryTreeNode<T> parent) {
+    void setParent(RedBlackTreeNode<T> parent) {
         this.parent = parent;
     }
 

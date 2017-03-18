@@ -37,7 +37,7 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
         } else {
             RedBlackTreeNode<T> newNode = new RedBlackTreeNode<T>();
             boolean inserted = BinaryTreeUtils.insertElement(rootNode, newElement, () -> newNode, parentNode -> {
-                newNode.setParent(parentNode);
+                newNode.setParent((RedBlackTreeNode<T>) parentNode);
                 repaintAndRebalanceOnInsert(this, newNode);
                 validateTree(this, newNode); //TODO later move out to test code
             });

@@ -12,7 +12,7 @@ class BinaryTreeNode<T extends Comparable<T> & Serializable> implements Serializ
     private BinaryTreeNode<T> right;
     private T value;
 
-    Optional<BinaryTreeNode<T>> getLeft() {
+    Optional<? extends BinaryTreeNode<T>> getLeft() {
         return Optional.ofNullable(left);
     }
 
@@ -20,7 +20,7 @@ class BinaryTreeNode<T extends Comparable<T> & Serializable> implements Serializ
         this.left = left;
     }
 
-    Optional<BinaryTreeNode<T>> getRight() {
+    Optional<? extends BinaryTreeNode<T>> getRight() {
         return Optional.ofNullable(right);
     }
 
