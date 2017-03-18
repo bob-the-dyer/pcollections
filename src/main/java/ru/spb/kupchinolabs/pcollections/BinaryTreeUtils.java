@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static ru.spb.kupchinolabs.pcollections.RedBlackTreeNodeColor.BLACK;
+
 /**
  * Created by vladimir-k on 16.03.17.
  */
@@ -146,7 +148,37 @@ class BinaryTreeUtils {
     }
 
     static <T extends Comparable<T> & Serializable> void validateTree(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> changedNode) {
-        //TODO later
+        if (ts.rootNode == null) return;
+        validateRootIsBlack(ts);
+        validateEachRedNodeHasBlackChildrenRecursively(ts.rootNode);
+        validateBlackDepth(ts.rootNode);
+    }
+
+    private static <T extends Comparable<T> & Serializable> void validateRootIsBlack(RedBlackTreeSet<T> ts) {
+        if (ts.rootNode.getColor() != BLACK)
+            throw new IllegalStateException("violation of RBTree property on node " + ts.rootNode + " : root should be black");
+    }
+
+    private static <T extends Comparable<T> & Serializable> void validateEachRedNodeHasBlackChildrenRecursively(RedBlackTreeNode<T> node) {
+        if (node.getColor() != RedBlackTreeNodeColor.RED) return;
+        if (node.getLeft().isPresent()) {
+            RedBlackTreeNode<T> leftChild = (RedBlackTreeNode<T>) node.getLeft().get();
+            if (leftChild.getColor() != BLACK) {
+                throw new IllegalStateException("violation of RBTree property " + node + ": each red node should have black children");
+            }
+            validateEachRedNodeHasBlackChildrenRecursively(leftChild);
+        }
+        if (node.getRight().isPresent()) {
+            RedBlackTreeNode<T> rightChild = (RedBlackTreeNode<T>) node.getRight().get();
+            if (rightChild.getColor() != BLACK) {
+                throw new IllegalStateException("violation of RBTree property on node " + node + " : each red node should have black children");
+            }
+            validateEachRedNodeHasBlackChildrenRecursively(rightChild);
+        }
+    }
+
+    private static <T extends Comparable<T> & Serializable> void validateBlackDepth(RedBlackTreeNode<T> node) {
+        //TODO
     }
 
 

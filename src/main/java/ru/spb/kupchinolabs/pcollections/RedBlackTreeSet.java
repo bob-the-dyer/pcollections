@@ -11,7 +11,7 @@ import static ru.spb.kupchinolabs.pcollections.RedBlackTreeNodeColor.BLACK;
  */
 public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements SimpleSet<T>, Serializable {
 
-    private RedBlackTreeNode<T> rootNode;
+    RedBlackTreeNode<T> rootNode;
     private int size = 0;
 
     @Override
@@ -50,6 +50,7 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
         if (element == null) throw new NullPointerException("null elements are not supported");
         boolean removed = searchAndRemove(newRoot -> {
             this.rootNode = (RedBlackTreeNode<T>) newRoot;
+            this.rootNode.setParent(null);
         }, element, rootNode, rootNode, false, parentOfRemoved -> {
             repaintAndRebalanceOnRemove(this, (RedBlackTreeNode<T>) parentOfRemoved);
             validateTree(this, (RedBlackTreeNode<T>) parentOfRemoved); //TODO later move out to test code
