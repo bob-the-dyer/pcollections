@@ -151,7 +151,7 @@ class BinaryTreeUtils {
         if (ts.rootNode == null) return;
         validateRootIsBlack(ts);
         validateEachRedNodeHasBlackChildrenRecursively(ts.rootNode);
-        validateBlackDepth(ts.rootNode);
+        validateSameBlackDepthRecursively(ts.rootNode);
     }
 
     private static <T extends Comparable<T> & Serializable> void validateRootIsBlack(RedBlackTreeSet<T> ts) {
@@ -177,8 +177,18 @@ class BinaryTreeUtils {
         }
     }
 
-    private static <T extends Comparable<T> & Serializable> void validateBlackDepth(RedBlackTreeNode<T> node) {
-        //TODO
+    private static <T extends Comparable<T> & Serializable> int validateSameBlackDepthRecursively(RedBlackTreeNode<T> node) {
+        if (null == node) {
+            return 0;
+        } else {
+            int blackDepthLeft = validateSameBlackDepthRecursively((RedBlackTreeNode<T>) node.getLeft().orElse(null));
+            int blackDepthRight = validateSameBlackDepthRecursively((RedBlackTreeNode<T>) node.getRight().orElse(null));
+            if (blackDepthLeft != blackDepthRight) {
+                throw new IllegalStateException("violation of RBTree property on node " + node + " : black depth differs " + blackDepthLeft + "(left) vs. " + blackDepthRight);
+            } else {
+                return (node.getColor() == BLACK ? 1 : 0) + blackDepthLeft;
+            }
+        }
     }
 
 
