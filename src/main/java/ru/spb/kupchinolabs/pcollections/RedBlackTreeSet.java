@@ -32,14 +32,14 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
             rootNode = node;
             size++;
             repaintAndRebalanceOnInsert(this, rootNode);
-            validateTree(this, rootNode); //TODO later move out to test code
+            validateTree(this); //TODO later move out to test code
             return true;
         } else {
             RedBlackTreeNode<T> newNode = new RedBlackTreeNode<T>();
             boolean inserted = BinaryTreeUtils.insertElement(rootNode, newElement, () -> newNode, parentNode -> {
                 newNode.setParent((RedBlackTreeNode<T>) parentNode);
                 repaintAndRebalanceOnInsert(this, newNode);
-                validateTree(this, newNode); //TODO later move out to test code
+                validateTree(this); //TODO later move out to test code
             });
             if (inserted) {
                 size++;
@@ -54,9 +54,10 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
         boolean removed = searchAndRemove(newRoot -> {
             this.rootNode = (RedBlackTreeNode<T>) newRoot;
             this.rootNode.setParent(null);
-        }, element, rootNode, rootNode, false, parentOfRemoved -> {
-            repaintAndRebalanceOnRemove(this, (RedBlackTreeNode<T>) parentOfRemoved);
-            validateTree(this, (RedBlackTreeNode<T>) parentOfRemoved); //TODO later move out to test code
+        }, element, rootNode, rootNode, false, (arg) -> {
+            ((RedBlackTreeNode<T>) arg.removedNode).setParent(null);
+            repaintAndRebalanceOnRemove(this, (RedBlackTreeNode<T>) arg.removedNode, (RedBlackTreeNode<T>) arg.childNode, (RedBlackTreeNode<T>) arg.parentNode);
+            validateTree(this); //TODO later move out to test code
         });
         if (removed) {
             size--;

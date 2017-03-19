@@ -57,29 +57,25 @@ class BinaryTreeUtils {
                 lastStepLeft = true;
             }
         }
-
         BinaryTreeNode<T> newNode = newNodeSupplier.get();
         newNode.setValue(newElement);
-
         if (lastStepLeft) {
             parentNode.setLeft(newNode);
         } else {
             parentNode.setRight(newNode);
         }
-
         parentConsumer.accept(parentNode);
-
         return true;
     }
 
     static <T extends Comparable<T> & Serializable> boolean searchAndRemove(Consumer<BinaryTreeNode<T>> rootNodeSetter, T element,
                                                                             BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode,
-                                                                            boolean lastStepLeft, Consumer<BinaryTreeNode<T>> parentNodeModifier) {
+                                                                            boolean lastStepLeft, Consumer<OnNodeRemoveCallbackArgument<T>> onNodeRemoveCallback) {
         while (currentNode != null) {
             T curValue = currentNode.getValue();
             int compareTo = curValue.compareTo(element);
             if (compareTo == 0)
-                return remove(rootNodeSetter, currentNode, parentNode, lastStepLeft, parentNodeModifier);
+                return remove(rootNodeSetter, currentNode, parentNode, lastStepLeft, onNodeRemoveCallback);
             parentNode = currentNode;
             if (compareTo < 0) {
                 currentNode = currentNode.getRight().orElse(null);
@@ -94,7 +90,7 @@ class BinaryTreeUtils {
 
     private static <T extends Comparable<T> & Serializable> boolean remove(Consumer<BinaryTreeNode<T>> rootNodeSetter,
                                                                            BinaryTreeNode<T> currentNode, BinaryTreeNode<T> parentNode,
-                                                                           boolean lastStepLeft, Consumer<BinaryTreeNode<T>> parentNodeModifier) {
+                                                                           boolean lastStepLeft, Consumer<OnNodeRemoveCallbackArgument<T>> onNodeRemoveCallback) {
         if (!currentNode.getLeft().isPresent() && !currentNode.getRight().isPresent()) { //leaf with no children
             if (parentNode == currentNode) {
                 rootNodeSetter.accept(null);
@@ -103,7 +99,8 @@ class BinaryTreeUtils {
             } else {
                 parentNode.setRight(null);
             }
-            parentNodeModifier.accept(parentNode);
+            OnNodeRemoveCallbackArgument<T> callbackArgument = new OnNodeRemoveCallbackArgument<>(currentNode, null, parentNode);
+            onNodeRemoveCallback.accept(callbackArgument);
             return true;
         }
         if (currentNode.getLeft().isPresent() ^ currentNode.getRight().isPresent()) { //leaf with single child
@@ -115,14 +112,15 @@ class BinaryTreeUtils {
             } else {
                 parentNode.setRight(child);
             }
-            parentNodeModifier.accept(parentNode);
+            OnNodeRemoveCallbackArgument<T> callbackArgument = new OnNodeRemoveCallbackArgument<>(currentNode, child, parentNode);
+            onNodeRemoveCallback.accept(callbackArgument);
             return true;
         }
         if (currentNode.getLeft().isPresent() && currentNode.getRight().isPresent()) { //leaf with both children
             BinaryTreeNode<T> leftChild = currentNode.getLeft().get();
             T maxFromLeft = maximum(leftChild);
             currentNode.setValue(maxFromLeft);
-            return searchAndRemove(rootNodeSetter, maxFromLeft, leftChild, currentNode, true, parentNodeModifier);
+            return searchAndRemove(rootNodeSetter, maxFromLeft, leftChild, currentNode, true, onNodeRemoveCallback);
         }
         throw new IllegalStateException("we shouldn't get here ever");
     }
@@ -225,11 +223,36 @@ class BinaryTreeUtils {
         leftChild.setRight(node);
     }
 
-    static <T extends Comparable<T> & Serializable> void repaintAndRebalanceOnRemove(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> parentOfRemoved) {
-        //TODO later
+    static <T extends Comparable<T> & Serializable> void repaintAndRebalanceOnRemove(RedBlackTreeSet<T> ts,
+                                                                                     RedBlackTreeNode<T> removedNode, RedBlackTreeNode<T> childNode, RedBlackTreeNode<T> parentNode) {
+        if (removedNode.getColor() == RED) {
+            return;
+        }
+        if (removedNode.getColor() == BLACK && childNode != null && childNode.getColor() == RED) {
+            childNode.setColor(BLACK);
+            return;
+        }
+        // removedNode, parent and childNode are black
+        if (!parentNode.getParent().isPresent()) { // child was removed from root node
+            return;
+        } else {
+            RedBlackTreeNode<T> sibling = sibling(childNode).get();
+            if (sibling.getColor() == RED) {
+                parentNode.setColor(RED);
+                sibling.setColor(BLACK);
+                Optional<RedBlackTreeNode<T>> grandparent = parentNode.getParent();
+                if (parentNode.getLeft().isPresent() && parentNode.getLeft().get() == childNode) {
+                    boolean internal = grandparent.isPresent() && grandparent.get().getRight().isPresent() && grandparent.get().getRight().get() == parentNode;
+                    rotateRight(internal, childNode, parentNode, grandparent.orElse(null), ts);
+                } else {
+                    boolean internal = grandparent.isPresent() && grandparent.get().getLeft().isPresent() && grandparent.get().getLeft().get() == parentNode;
+                    rotateLeft(internal, childNode, parentNode, grandparent.orElse(null), ts);
+                }
+            }
+        }
     }
 
-    static <T extends Comparable<T> & Serializable> void validateTree(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> changedNode) {
+    static <T extends Comparable<T> & Serializable> void validateTree(RedBlackTreeSet<T> ts) {
         if (ts.rootNode == null) return;
         validateRootIsBlack(ts);
         validateEachRedNodeHasBlackChildrenRecursively(ts.rootNode, ts);
@@ -274,6 +297,7 @@ class BinaryTreeUtils {
     }
 
     static <T extends Comparable<T> & Serializable> String buildWidthTraverseString(Stack<RedBlackTreeNode<T>> stack) {
+        //TODO FIXME there is a bug here, tree is printed out incorrectly - odd levels
         if (stack.isEmpty()) return "";
         RedBlackTreeNode<T> topNode = stack.pop();
         StringBuilder builder = new StringBuilder();
@@ -301,6 +325,19 @@ class BinaryTreeUtils {
         }
     }
 
+    static <T extends Comparable<T> & Serializable> Optional<RedBlackTreeNode<T>> sibling(RedBlackTreeNode<T> node) {
+        if (node != null && node.getParent().isPresent()) {
+            RedBlackTreeNode<T> parent = node.getParent().get();
+            if (parent.getLeft().isPresent() && parent.getLeft().get() == node) {
+                return (Optional<RedBlackTreeNode<T>>) parent.getRight();
+            } else {
+                return (Optional<RedBlackTreeNode<T>>) parent.getLeft();
+            }
+        } else {
+            return Optional.empty();
+        }
+    }
+
     static <T extends Comparable<T> & Serializable> Optional<RedBlackTreeNode<T>> uncle(RedBlackTreeNode<T> node) {
         Optional<RedBlackTreeNode<T>> grandparent = grandparent(node);
         if (grandparent.isPresent()) {
@@ -313,5 +350,4 @@ class BinaryTreeUtils {
             return Optional.empty();
         }
     }
-
 }

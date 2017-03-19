@@ -42,7 +42,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
         if (element == null) throw new NullPointerException("null elements are not supported");
         boolean removed = searchAndRemove(newRoot -> {
             this.rootNode = newRoot;
-        }, element, rootNode, rootNode, false, parentOfRemoved -> {
+        }, element, rootNode, rootNode, false, (onNodeRemoveCallbackArgument) -> {
         });
         if (removed) {
             size--;

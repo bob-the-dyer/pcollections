@@ -36,7 +36,7 @@ See unit tests for more examples of BinaryTreeSet and PersistentRedBlackTreeSet 
   - "colorize" the Set: add insert/delete recoloring and rebalancing logic to keep RBTree invariants valid - IN PROGRESS
   - add unit tests to prove RBTree invariants valid on insert/delete - IN PROGRESS  
   - add persistence for RBTree and tests   
-  - benchmarking
+  - benchmarking (?)
   - interfaces refactoring, adding convenience methods, see TODOs (?)
   - javadocs (?)
       
