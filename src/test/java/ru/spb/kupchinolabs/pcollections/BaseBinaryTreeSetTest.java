@@ -72,6 +72,7 @@ abstract public class BaseBinaryTreeSetTest {
             assertFalse(treeSet.insert(1));
 
             assertTrue(treeSet.contains(5));
+            System.out.println(initialElements);
             assertTrue(treeSet.remove(5));
             assertFalse(treeSet.contains(5));
             assertFalse(treeSet.remove(5));

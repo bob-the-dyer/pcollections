@@ -7,12 +7,10 @@ import java.io.Serializable;
  */
 public class OnNodeRemoveCallbackArgument<T extends Comparable<T> & Serializable> {
     BinaryTreeNode<T> removedNode;
-    BinaryTreeNode<T> childNode;
-    BinaryTreeNode<T> parentNode;
+    BinaryTreeNode<T> baseNode;
 
-    OnNodeRemoveCallbackArgument(BinaryTreeNode<T> removedNode, BinaryTreeNode<T> childNode, BinaryTreeNode<T> parentNode) {
+    OnNodeRemoveCallbackArgument(BinaryTreeNode<T> removedNode, BinaryTreeNode<T> baseNode) {
         this.removedNode = removedNode;
-        this.childNode = childNode;
-        this.parentNode = parentNode;
+        this.baseNode = baseNode;
     }
 }

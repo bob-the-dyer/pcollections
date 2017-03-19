@@ -52,11 +52,13 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
     public boolean remove(T element) {
         if (element == null) throw new NullPointerException("null elements are not supported");
         boolean removed = searchAndRemove(newRoot -> {
-            this.rootNode = (RedBlackTreeNode<T>) newRoot;
-            this.rootNode.setParent(null);
+            rootNode = (RedBlackTreeNode<T>) newRoot;
+            if (rootNode != null) {
+                rootNode.setParent(null);
+            }
         }, element, rootNode, rootNode, false, (arg) -> {
-            ((RedBlackTreeNode<T>) arg.removedNode).setParent(null);
-            repaintAndRebalanceOnRemove(this, (RedBlackTreeNode<T>) arg.removedNode, (RedBlackTreeNode<T>) arg.childNode, (RedBlackTreeNode<T>) arg.parentNode);
+            ((RedBlackTreeNode<T>) arg.removedNode).setParent(null); //TODO consider to remove as looks like GC will remove removedNode anyway
+            repaintAndRebalanceOnRemove(this, (RedBlackTreeNode<T>) arg.removedNode, (RedBlackTreeNode<T>) arg.baseNode);
             validateTree(this); //TODO later move out to test code
         });
         if (removed) {
@@ -78,9 +80,11 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
     @Override
     public String toString() {
         Stack<RedBlackTreeNode<T>> stack = new Stack<>();
-        stack.push(rootNode);
+        if (rootNode != null){
+            stack.push(rootNode);
+        }
         return "RBTS{\n" +
-                buildWidthTraverseString(stack) +
+                buildWidthTraverseStringFixed(stack) +
                 "}";
     }
 

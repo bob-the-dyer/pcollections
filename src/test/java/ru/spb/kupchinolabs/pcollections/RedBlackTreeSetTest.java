@@ -42,11 +42,22 @@ public class RedBlackTreeSetTest extends BaseBinaryTreeSetTest {
             System.out.println(treeSet);
             System.out.println("<<<<<<<<<");
         });
+        System.out.println(">>>>>>>>> removing " + 5);
         Assert.assertTrue(treeSet.remove(5));
+        System.out.println("now tree looks like:");
+        System.out.println(treeSet);
+        System.out.println("<<<<<<<<<");
+
         List<Integer> traversedElements = new ArrayList<>();
         treeSet.forEach(traversedElements::add);
         Assert.assertEquals(expectedElements, traversedElements);
-        expectedElements.forEach(treeSet::remove);
+        expectedElements.forEach(element -> {
+            System.out.println(">>>>>>>>> removing " + element);
+            Assert.assertTrue(treeSet.remove(element));
+            System.out.println("now tree looks like:");
+            System.out.println(treeSet);
+            System.out.println("<<<<<<<<<");
+        });
     }
 
     @Test
