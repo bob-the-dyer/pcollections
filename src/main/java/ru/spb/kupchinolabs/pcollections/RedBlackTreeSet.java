@@ -2,7 +2,8 @@ package ru.spb.kupchinolabs.pcollections;
 
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.Stack;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.*;
 import static ru.spb.kupchinolabs.pcollections.RedBlackTreeNodeColor.BLACK;
@@ -79,9 +80,9 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
 
     @Override
     public String toString() {
-        Stack<RedBlackTreeNode<T>> stack = new Stack<>();
-        if (rootNode != null){
-            stack.push(rootNode);
+        Queue<RedBlackTreeNode<T>> stack = new LinkedBlockingQueue<>();
+        if (rootNode != null) {
+            stack.offer(rootNode);
         }
         return "RBTS{\n" +
                 buildWidthTraverseStringFixed(stack) +

@@ -15,25 +15,27 @@ abstract public class BaseBinaryTreeSetTest {
     SimpleSet<Integer> treeSet;
 
     @Test
-    public void ordering() {
+    public void orderingStochastic() {
         assertEquals(0, treeSet.size());
-        List<Integer> initialElements = new ArrayList<>();
-        new Random().ints(1000, 0, 1000).forEach(i -> {
-            if (!initialElements.contains(i)) initialElements.add(i);
-            treeSet.insert(i);
-        });
+        for (int i = 0; i < 10000; i++) {
+            List<Integer> initialElements = new ArrayList<>();
+            new Random().ints(1000, 0, 1000).forEach(random -> {
+                if (!initialElements.contains(random)) initialElements.add(random);
+                treeSet.insert(random);
+            });
 
-        assertEquals(initialElements.size(), treeSet.size());
+            assertEquals(initialElements.size(), treeSet.size());
 
-        Collections.sort(initialElements);
+            Collections.sort(initialElements);
 
-        List<Integer> traversedElements = new ArrayList<>();
-        treeSet.forEach(traversedElements::add);
+            List<Integer> traversedElements = new ArrayList<>();
+            treeSet.forEach(traversedElements::add);
 
-        assertEquals(initialElements, traversedElements);
+            assertEquals(initialElements, traversedElements);
 
-        initialElements.forEach(treeSet::remove);
-        assertEquals(0, treeSet.size());
+            initialElements.forEach(treeSet::remove);
+            assertEquals(0, treeSet.size());
+        }
     }
 
     @Test(expected = NullPointerException.class)

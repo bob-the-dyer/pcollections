@@ -2,7 +2,8 @@ package ru.spb.kupchinolabs.pcollections;
 
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.Stack;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -371,22 +372,22 @@ class BinaryTreeUtils {
         }
     }
 
-    static <T extends Comparable<T> & Serializable> String buildWidthTraverseStringFixed(Stack<RedBlackTreeNode<T>> stack) {
+    static <T extends Comparable<T> & Serializable> String buildWidthTraverseStringFixed(Queue<RedBlackTreeNode<T>> queue) {
         StringBuilder sb = new StringBuilder();
-        while (!stack.isEmpty()) {
-            RedBlackTreeNode<T> node = stack.pop();
+        Queue<RedBlackTreeNode<T>> newQueue = new LinkedBlockingDeque<>();
+        while (!queue.isEmpty()) {
+            RedBlackTreeNode<T> node = queue.remove();
             sb.append(node.getValue()).append(node.getColor() == RED ? "R" : "B").append(" ");
-            if (stack.isEmpty()) {
-                sb.append("\n");
-                Stack<RedBlackTreeNode<T>> newstack = new Stack<>();
-                if (node.getRight().isPresent()) {
-                    newstack.push((RedBlackTreeNode<T>) node.getRight().get());
-                }
-                if (node.getLeft().isPresent()) {
-                    newstack.push((RedBlackTreeNode<T>) node.getLeft().get());
-                }
-                return sb.append(buildWidthTraverseStringFixed(newstack)).toString();
+            if (node.getLeft().isPresent()) {
+                newQueue.offer((RedBlackTreeNode<T>) node.getLeft().get());
             }
+            if (node.getRight().isPresent()) {
+                newQueue.offer((RedBlackTreeNode<T>) node.getRight().get());
+            }
+        }
+        sb.append("\n");
+        if (!newQueue.isEmpty()) {
+            sb.append(buildWidthTraverseStringFixed(newQueue));
         }
         return sb.toString();
     }

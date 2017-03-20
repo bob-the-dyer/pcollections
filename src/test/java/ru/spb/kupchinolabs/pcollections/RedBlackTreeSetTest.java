@@ -31,7 +31,7 @@ public class RedBlackTreeSetTest extends BaseBinaryTreeSetTest {
     }
 
     @Test
-    public void debug() {
+    public void debugRemoval() {
         List<Integer> initialElements = Arrays.asList(7, 9, 5, 10, 2, 3);
         List<Integer> expectedElements = Arrays.asList(2, 3, 7, 9, 10);
 
@@ -62,7 +62,7 @@ public class RedBlackTreeSetTest extends BaseBinaryTreeSetTest {
 
     @Test
     public void prettyPrint() {
-        List<Integer> initialElements = Arrays.asList(1,10,7,8,9);
+        List<Integer> initialElements = Arrays.asList(3, 1, 5, -1, 2, 4, 6);
 
         initialElements.forEach((element) -> {
             System.out.println(">>>>>>>>> inserting " + element);
@@ -71,6 +71,19 @@ public class RedBlackTreeSetTest extends BaseBinaryTreeSetTest {
             System.out.println(treeSet);
             System.out.println("<<<<<<<<<");
         });
+    }
+
+    @Test
+    public void debugRedChildForRedParent() {
+        List<Integer> initialElements = Arrays.asList(1, 3, 5, 2);
+        initialElements.forEach((element) -> {
+            System.out.println(">>>>>>>>> inserting " + element);
+            treeSet.insert(element);
+            System.out.println("now tree looks like:");
+            System.out.println(treeSet);
+            System.out.println("<<<<<<<<<");
+        });
+        treeSet.remove(5);
     }
 
 }
