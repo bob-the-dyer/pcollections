@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by vladimir-k on 16.03.17.
  */
-public class RedBlackTreeSetTest extends BaseBinaryTreeSetTest {
+public class RedBlackTreeSetTest extends BaseSimpleSetTest {
 
     @Before
     public void init() {
@@ -28,4 +28,33 @@ public class RedBlackTreeSetTest extends BaseBinaryTreeSetTest {
         });
     }
 
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void orderingStochastic() {
+        super.orderingStochastic();
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void removeNull() {
+        super.removeNull();
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void insertContainsDeleteStochastic() {
+        super.insertContainsDeleteStochastic();
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void stochasticRemovalOfSingleElement() {
+        super.stochasticRemovalOfSingleElement();
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void empty() {
+        super.empty();
+    }
 }

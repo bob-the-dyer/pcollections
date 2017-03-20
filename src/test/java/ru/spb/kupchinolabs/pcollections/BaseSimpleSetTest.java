@@ -2,7 +2,7 @@ package ru.spb.kupchinolabs.pcollections;
 
 import org.junit.Test;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -10,14 +10,14 @@ import static org.junit.Assert.*;
 /**
  * Created by vladimir-k on 17.03.17.
  */
-abstract public class BaseBinaryTreeSetTest {
+abstract public class BaseSimpleSetTest {
 
     SimpleSet<Integer> treeSet;
 
     @Test
     public void orderingStochastic() {
         assertEquals(0, treeSet.size());
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             List<Integer> initialElements = new ArrayList<>();
             new Random().ints(1000, 0, 1000).forEach(random -> {
                 if (!initialElements.contains(random)) initialElements.add(random);
@@ -91,14 +91,7 @@ abstract public class BaseBinaryTreeSetTest {
         treeSet.insert(1);
         treeSet.insert(5);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream outputStream = new ObjectOutputStream(baos);
-        outputStream.writeObject(treeSet);
-        outputStream.close();
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        ObjectInputStream inputStream = new ObjectInputStream(bais);
-        SimpleSet<Integer> deserializedSet = (SimpleSet<Integer>) inputStream.readObject();
+        SimpleSet<Integer> deserializedSet = (SimpleSet<Integer>) BinaryTreeUtils.cloneObject(treeSet);
 
         assertEquals(treeSet.size(), deserializedSet.size());
 
@@ -115,7 +108,7 @@ abstract public class BaseBinaryTreeSetTest {
     public void stochasticRemovalOfSingleElement() {
         List<Integer> initialElements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         List<Integer> expectedElements = Arrays.asList(1, 2, 3, 4, 6, 7, 8, 9, 10);
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10000; i++) {
             Collections.shuffle(initialElements);
             initialElements.forEach(treeSet::insert);
             assertTrue(treeSet.remove(5));
