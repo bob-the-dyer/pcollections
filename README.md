@@ -12,12 +12,16 @@ To build project and run unit tests you need maven to be preinstalled on your ma
 ### Main usage example
 ----
     PersistentSet<Integer> treeSet1 = new PersistentRedBlackTreeSet<>();
+    
     PersistentSet<Integer> treeSet2 = treeSet1.insert(42);
+    
     assert treeSet1.size() == 0;
     assert !treeSet1.contains(42);
     assert treeSet2.size() == 1;
     assert treeSet2.contains(42);
+    
     PersistentSet<Integer> treeSet3 = treeSet2.remove(42);
+    
     assert treeSet2.contains(42);
     assert treeSet2.size() == 1;
     assert !treeSet3.contains(42);
