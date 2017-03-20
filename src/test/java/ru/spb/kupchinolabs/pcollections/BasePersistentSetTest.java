@@ -36,6 +36,7 @@ abstract public class BasePersistentSetTest {
         initialElements.forEach(e -> {
             treeSetArr[0] = treeSetArr[0].remove(e);
         });
+        assertEquals(0, treeSetArr[0].size());
     }
 
     @Test(expected = NullPointerException.class)
