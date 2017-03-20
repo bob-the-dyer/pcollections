@@ -26,7 +26,7 @@ class BinaryTreeUtils {
 //
 //            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 //            ObjectInputStream inputStream = new ObjectInputStream(bais);
-//            newElement = (T) inputStream.readObject();
+//            return (T) inputStream.readObject();
 //        } catch (Exception e) {
 //            throw new IllegalStateException("fail in cloning element " + element + " via serialization/deserialization", e);
 //        }
@@ -41,7 +41,7 @@ class BinaryTreeUtils {
 
     static <T extends Comparable<T> & Serializable> boolean insertElement(BinaryTreeNode<T> rootNode, T newElement,
                                                                           Supplier<BinaryTreeNode<T>> newNodeSupplier,
-                                                                          Consumer<BinaryTreeNode<T>> parentConsumer) {
+                                                                          Consumer<BinaryTreeNode<T>> onNodeInsertCallback) {
         BinaryTreeNode<T> parentNode = null;
         BinaryTreeNode<T> currentNode = rootNode;
         boolean lastStepLeft = false;
@@ -65,7 +65,7 @@ class BinaryTreeUtils {
         } else {
             parentNode.setRight(newNode);
         }
-        parentConsumer.accept(parentNode);
+        onNodeInsertCallback.accept(parentNode);
         return true;
     }
 
@@ -247,11 +247,13 @@ class BinaryTreeUtils {
                 return;
             } else {
                 if (firstRun) {
-                    currentNode.setColor(RED);
-                    if (currentNode.getLeft().isPresent()) {
-                        rotateRight(false, (RedBlackTreeNode<T>) currentNode.getLeft().get(), currentNode, null, ts);
+//                    currentNode.setColor(RED);
+                    if (currentNode.getLeft().isPresent() && !currentNode.getRight().isPresent()) {
+                        //rotateRight(false, (RedBlackTreeNode<T>) currentNode.getLeft().get(), currentNode, null, ts);
+                    } else if (currentNode.getRight().isPresent() && !currentNode.getLeft().isPresent()) {
+                        //rotateLeft(false, (RedBlackTreeNode<T>) currentNode.getRight().get(), currentNode, null, ts);
                     } else {
-                        rotateLeft(false, (RedBlackTreeNode<T>) currentNode.getRight().get(), currentNode, null, ts);
+                        //throw new IllegalStateException("we shouldn't get here ever");
                     }
                 }
             }

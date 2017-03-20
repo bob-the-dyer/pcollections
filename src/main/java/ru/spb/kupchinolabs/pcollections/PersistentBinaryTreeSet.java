@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.cloneElement;
+
 /**
  * Created by vladimir-k on 15.03.17.
  */
@@ -28,8 +30,9 @@ public class PersistentBinaryTreeSet<T extends Comparable<T> & Serializable> imp
 
     @Override
     public PersistentSet<T> insert(T element) {
-        SimpleSet<T> newTreeSet = deepCopy(this.treeSet); //TODO consider cloning element
-        newTreeSet.insert(element);
+        T newElement = cloneElement(element);
+        SimpleSet<T> newTreeSet = deepCopy(this.treeSet);
+        newTreeSet.insert(newElement);
         return new PersistentBinaryTreeSet<>(newTreeSet);
     }
 
@@ -51,6 +54,8 @@ public class PersistentBinaryTreeSet<T extends Comparable<T> & Serializable> imp
     }
 
     private SimpleSet<T> deepCopy(SimpleSet<T> treeSet) {
+        //TODO consider other ways to get deepCopy: ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.cloneElement() or fair traverse
+        // for now just iterating over elements of original tree and building new tree from scratch
         BinaryTreeSet<T> deepCopy = new BinaryTreeSet<>();
         List<T> elements = new ArrayList<T>();
         treeSet.forEach(elements::add);
