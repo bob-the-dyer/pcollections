@@ -5,7 +5,7 @@ import org.junit.Before;
 /**
  * Created by vladimir-k on 12.03.17.
  */
-public class BinaryTreeSetTest extends BaseBinaryTreeSetTest {
+public class BinaryTreeSetTest extends BaseSimpleSetTest {
 
     @Before
     public void init() {

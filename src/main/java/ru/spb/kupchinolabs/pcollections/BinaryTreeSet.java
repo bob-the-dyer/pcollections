@@ -3,7 +3,7 @@ package ru.spb.kupchinolabs.pcollections;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.cloneElement;
+import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.cloneObject;
 import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.searchAndRemove;
 
 /**
@@ -15,13 +15,12 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
     private int size = 0;
 
     public boolean contains(T element) {
-        if (element == null) throw new NullPointerException("null elements are not supported");
         return BinaryTreeUtils.contains(element, rootNode);
     }
 
     public boolean insert(T element) {
         if (element == null) throw new NullPointerException("null elements are not supported");
-        T newElement = cloneElement(element);
+        T newElement = (T) cloneObject(element);
         if (rootNode == null) {
             rootNode = new BinaryTreeNode<T>();
             rootNode.setValue(newElement);
@@ -41,9 +40,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
     @Override
     public boolean remove(T element) {
         if (element == null) throw new NullPointerException("null elements are not supported");
-        boolean removed = searchAndRemove(newRoot -> this.rootNode = newRoot, element, rootNode, rootNode, false,
-                onNodeRemoveCallbackArgument -> {
-                });
+        boolean removed = searchAndRemove(newRoot -> this.rootNode = newRoot, element, rootNode, rootNode, false);
         if (removed) {
             size--;
         }
