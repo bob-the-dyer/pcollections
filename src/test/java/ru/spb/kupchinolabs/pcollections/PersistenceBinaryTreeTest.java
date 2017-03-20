@@ -158,4 +158,14 @@ public class PersistenceBinaryTreeTest {
         assertTrue(treeSet1.contains(1));
     }
 
+    @Test
+    public void insertingOrDeletingWithNoEffect() {
+        PersistentSet<Integer> treeSet = new PersistentBinaryTreeSet<>();
+        PersistentSet<Integer> newTreeSet = treeSet.insert(5);
+        PersistentSet<Integer> sameTreeSet = newTreeSet.insert(5);
+        assertTrue(newTreeSet == sameTreeSet);
+        sameTreeSet = newTreeSet.remove(8);
+        assertTrue(newTreeSet == sameTreeSet);
+    }
+
 }

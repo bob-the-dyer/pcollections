@@ -39,6 +39,12 @@ class BinaryTreeUtils {
         return maxNode.getValue();
     }
 
+    private static <T extends Comparable<T> & Serializable> T minimum(BinaryTreeNode<T> node) {
+        BinaryTreeNode<T> minNode = node;
+        while (minNode.getLeft().isPresent()) minNode = minNode.getLeft().get();
+        return minNode.getValue();
+    }
+
     static <T extends Comparable<T> & Serializable> boolean insertElement(BinaryTreeNode<T> rootNode, T newElement,
                                                                           Supplier<BinaryTreeNode<T>> newNodeSupplier,
                                                                           Consumer<BinaryTreeNode<T>> onNodeInsertCallback) {
@@ -104,24 +110,18 @@ class BinaryTreeUtils {
             onNodeRemoveCallback.accept(callbackArgument);
             return true;
         }
-        if (currentNode.getLeft().isPresent() ^ currentNode.getRight().isPresent()) { //leaf with single child
-            BinaryTreeNode<T> child = currentNode.getLeft().isPresent() ? currentNode.getLeft().get() : currentNode.getRight().get();
-            if (parentNode == currentNode) {
-                rootNodeSetter.accept(child);
-            } else if (lastStepLeft) {
-                parentNode.setLeft(child);
+        if (currentNode.getLeft().isPresent() || currentNode.getRight().isPresent()) { //leaf with at least one child
+            if (currentNode.getLeft().isPresent()){
+                BinaryTreeNode<T> leftChild = currentNode.getLeft().get();
+                T maxFromLeft = maximum(leftChild);
+                currentNode.setValue(maxFromLeft);
+                return searchAndRemove(rootNodeSetter, maxFromLeft, leftChild, currentNode, true, onNodeRemoveCallback);
             } else {
-                parentNode.setRight(child);
+                BinaryTreeNode<T> rightChild = currentNode.getRight().get();
+                T minFromRight = minimum(rightChild);
+                currentNode.setValue(minFromRight);
+                return searchAndRemove(rootNodeSetter, minFromRight, rightChild, currentNode, false, onNodeRemoveCallback);
             }
-            OnNodeRemoveCallbackArgument<T> callbackArgument = new OnNodeRemoveCallbackArgument<>(currentNode, child);
-            onNodeRemoveCallback.accept(callbackArgument);
-            return true;
-        }
-        if (currentNode.getLeft().isPresent() && currentNode.getRight().isPresent()) { //leaf with both children
-            BinaryTreeNode<T> leftChild = currentNode.getLeft().get();
-            T maxFromLeft = maximum(leftChild);
-            currentNode.setValue(maxFromLeft);
-            return searchAndRemove(rootNodeSetter, maxFromLeft, leftChild, currentNode, true, onNodeRemoveCallback);
         }
         throw new IllegalStateException("we shouldn't get here ever");
     }
@@ -237,7 +237,7 @@ class BinaryTreeUtils {
             currentNode.setColor(BLACK);
             return;
         }
-        // removedNode, parent and currentNode are black
+        // removedNode and currentNode are black
         repaintAndRebalanceOnRemoveRecursively(ts, currentNode, true);
     }
 
@@ -247,9 +247,9 @@ class BinaryTreeUtils {
                 return;
             } else {
                 if (firstRun) {
-//                    currentNode.setColor(RED);
+                    currentNode.setColor(RED);
                     if (currentNode.getLeft().isPresent() && !currentNode.getRight().isPresent()) {
-                        //rotateRight(false, (RedBlackTreeNode<T>) currentNode.getLeft().get(), currentNode, null, ts);
+//                        rotateRight(false, (RedBlackTreeNode<T>) currentNode.getLeft().get(), currentNode, null, ts);
                     } else if (currentNode.getRight().isPresent() && !currentNode.getLeft().isPresent()) {
                         //rotateLeft(false, (RedBlackTreeNode<T>) currentNode.getRight().get(), currentNode, null, ts);
                     } else {

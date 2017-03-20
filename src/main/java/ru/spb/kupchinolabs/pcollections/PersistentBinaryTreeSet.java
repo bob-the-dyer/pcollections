@@ -30,17 +30,25 @@ public class PersistentBinaryTreeSet<T extends Comparable<T> & Serializable> imp
 
     @Override
     public PersistentSet<T> insert(T element) {
-        T newElement = cloneElement(element);
-        SimpleSet<T> newTreeSet = deepCopy(this.treeSet);
-        newTreeSet.insert(newElement);
-        return new PersistentBinaryTreeSet<>(newTreeSet);
+        if (this.treeSet.contains(element)) {
+            return this;
+        } else {
+            T newElement = cloneElement(element);
+            SimpleSet<T> newTreeSet = deepCopy(this.treeSet);
+            newTreeSet.insert(newElement);
+            return new PersistentBinaryTreeSet<>(newTreeSet);
+        }
     }
 
     @Override
     public PersistentSet<T> remove(T element) {
-        SimpleSet<T> newTreeSet = deepCopy(this.treeSet);
-        newTreeSet.remove(element);
-        return new PersistentBinaryTreeSet<>(newTreeSet);
+        if (!this.treeSet.contains(element)) {
+            return this;
+        } else {
+            SimpleSet<T> newTreeSet = deepCopy(this.treeSet);
+            newTreeSet.remove(element);
+            return new PersistentBinaryTreeSet<>(newTreeSet);
+        }
     }
 
     @Override

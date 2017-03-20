@@ -15,6 +15,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
     private int size = 0;
 
     public boolean contains(T element) {
+        if (element == null) throw new NullPointerException("null elements are not supported");
         return BinaryTreeUtils.contains(element, rootNode);
     }
 

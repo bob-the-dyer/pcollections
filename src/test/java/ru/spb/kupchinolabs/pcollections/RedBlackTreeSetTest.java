@@ -63,7 +63,6 @@ public class RedBlackTreeSetTest extends BaseBinaryTreeSetTest {
     @Test
     public void prettyPrint() {
         List<Integer> initialElements = Arrays.asList(3, 1, 5, -1, 2, 4, 6);
-
         initialElements.forEach((element) -> {
             System.out.println(">>>>>>>>> inserting " + element);
             treeSet.insert(element);
