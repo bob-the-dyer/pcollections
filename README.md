@@ -39,7 +39,7 @@ See unit tests for more examples of BinaryTreeSet, PersistentBinaryTreeSet, RedB
   - null elements are allowed -> NO
   - collection should be serialisation ready -> YES
 
-### Persistence implementation that was considered:
+### Persistence aspects that were considered:
 
   - full persistence vs. partial -> full persistence
   - full copy on modification vs. minimal required copy of subtrees -> full copy
