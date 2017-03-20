@@ -111,7 +111,7 @@ class BinaryTreeUtils {
             return true;
         }
         if (currentNode.getLeft().isPresent() || currentNode.getRight().isPresent()) { //leaf with at least one child
-            if (currentNode.getLeft().isPresent()){
+            if (currentNode.getLeft().isPresent()) {
                 BinaryTreeNode<T> leftChild = currentNode.getLeft().get();
                 T maxFromLeft = maximum(leftChild);
                 currentNode.setValue(maxFromLeft);

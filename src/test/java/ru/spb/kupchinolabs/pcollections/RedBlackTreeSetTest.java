@@ -1,14 +1,10 @@
 package ru.spb.kupchinolabs.pcollections;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static junit.framework.TestCase.*;
 
 /**
  * Created by vladimir-k on 16.03.17.
@@ -21,46 +17,6 @@ public class RedBlackTreeSetTest extends BaseBinaryTreeSetTest {
     }
 
     @Test
-    public void insertRoot() {
-        RedBlackTreeSet<Integer> ts = new RedBlackTreeSet<>();
-        assertEquals(0, ts.size());
-        assertTrue(ts.insert(1));
-        assertTrue(ts.insert(3));
-        assertTrue(ts.insert(2));
-        assertFalse(ts.insert(1));
-    }
-
-    @Test
-    public void debugRemoval() {
-        List<Integer> initialElements = Arrays.asList(7, 9, 5, 10, 2, 3);
-        List<Integer> expectedElements = Arrays.asList(2, 3, 7, 9, 10);
-
-        initialElements.forEach((element) -> {
-            System.out.println(">>>>>>>>> inserting " + element);
-            treeSet.insert(element);
-            System.out.println("now tree looks like:");
-            System.out.println(treeSet);
-            System.out.println("<<<<<<<<<");
-        });
-        System.out.println(">>>>>>>>> removing " + 5);
-        Assert.assertTrue(treeSet.remove(5));
-        System.out.println("now tree looks like:");
-        System.out.println(treeSet);
-        System.out.println("<<<<<<<<<");
-
-        List<Integer> traversedElements = new ArrayList<>();
-        treeSet.forEach(traversedElements::add);
-        Assert.assertEquals(expectedElements, traversedElements);
-        expectedElements.forEach(element -> {
-            System.out.println(">>>>>>>>> removing " + element);
-            Assert.assertTrue(treeSet.remove(element));
-            System.out.println("now tree looks like:");
-            System.out.println(treeSet);
-            System.out.println("<<<<<<<<<");
-        });
-    }
-
-    @Test
     public void prettyPrint() {
         List<Integer> initialElements = Arrays.asList(3, 1, 5, -1, 2, 4, 6);
         initialElements.forEach((element) -> {
@@ -70,19 +26,6 @@ public class RedBlackTreeSetTest extends BaseBinaryTreeSetTest {
             System.out.println(treeSet);
             System.out.println("<<<<<<<<<");
         });
-    }
-
-    @Test
-    public void debugRedChildForRedParent() {
-        List<Integer> initialElements = Arrays.asList(1, 3, 5, 2);
-        initialElements.forEach((element) -> {
-            System.out.println(">>>>>>>>> inserting " + element);
-            treeSet.insert(element);
-            System.out.println("now tree looks like:");
-            System.out.println(treeSet);
-            System.out.println("<<<<<<<<<");
-        });
-        treeSet.remove(5);
     }
 
 }
