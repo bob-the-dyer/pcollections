@@ -33,6 +33,8 @@ abstract public class BaseSimpleSetTest {
 
             assertEquals(initialElements, traversedElements);
 
+            Collections.shuffle(initialElements);
+
             initialElements.forEach(treeSet::remove);
             assertEquals(0, treeSet.size());
         }
@@ -126,6 +128,7 @@ abstract public class BaseSimpleSetTest {
             final int[] countDown = {expectedElements.size()};
             Collections.shuffle(expectedElements);
             expectedElements.forEach((element) -> {
+                System.out.println("trying to remove " + element);
                 assertEquals(countDown[0], treeSet.size());
                 treeSet.remove(element);
                 System.out.println(">>> tree after deletion of " + element);

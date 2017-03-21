@@ -34,7 +34,7 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
             size++;
             repaintAndRebalanceOnInsert(this, rootNode);
             validateTree(this); //TODO later move out to test code
-            assert size == BinaryTreeUtils.size(this); //TODO remove later
+//            assert size == BinaryTreeUtils.size(this);
             return true;
         } else {
             RedBlackTreeNode<T> newNode = new RedBlackTreeNode<T>();
@@ -46,7 +46,7 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
             if (inserted) {
                 size++;
             }
-            assert size == BinaryTreeUtils.size(this); //TODO remove later
+//            assert size == BinaryTreeUtils.size(this);
             return inserted;
         }
     }
@@ -67,7 +67,7 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
         if (removed) {
             size--;
         }
-        assert size == BinaryTreeUtils.size(this); //TODO remove later
+//        assert size == BinaryTreeUtils.size(this);
         return removed;
     }
 

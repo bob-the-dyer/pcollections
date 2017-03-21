@@ -178,22 +178,22 @@ class BinaryTreeUtils {
         grandparent.setColor(RED);
         Optional<RedBlackTreeNode<T>> grandgrandparent = grandparent.getParent();
         if (parent.getLeft().isPresent() && parent.getLeft().get() == node) {
-            boolean internal = grandgrandparent.isPresent()
+            boolean fromCenterToOutside = grandgrandparent.isPresent()
                     && grandgrandparent.get().getRight().isPresent()
                     && grandgrandparent.get().getRight().get() == grandparent;
-            rotateRight(internal, parent, grandparent, grandgrandparent.orElse(null), ts);
+            rotateRight(fromCenterToOutside, parent, grandparent, grandgrandparent.orElse(null), ts);
         } else {
-            boolean internal = grandgrandparent.isPresent()
+            boolean fromCenterToOutside = grandgrandparent.isPresent()
                     && grandgrandparent.get().getLeft().isPresent()
                     && grandgrandparent.get().getLeft().get() == grandparent;
-            rotateLeft(internal, parent, grandparent, grandgrandparent.orElse(null), ts);
+            rotateLeft(fromCenterToOutside, parent, grandparent, grandgrandparent.orElse(null), ts);
         }
     }
 
-    private static <T extends Comparable<T> & Serializable> void rotateLeft(boolean internal, RedBlackTreeNode<T> rightChild, RedBlackTreeNode<T> node, RedBlackTreeNode<T> parent, RedBlackTreeSet<T> ts) {
+    private static <T extends Comparable<T> & Serializable> void rotateLeft(boolean fromCenterToOutside, RedBlackTreeNode<T> rightChild, RedBlackTreeNode<T> node, RedBlackTreeNode<T> parent, RedBlackTreeSet<T> ts) {
         rightChild.setParent(parent);
         if (parent != null) {
-            if (internal) {
+            if (fromCenterToOutside) {
                 parent.setLeft(rightChild);
             } else {
                 parent.setRight(rightChild);
@@ -209,10 +209,10 @@ class BinaryTreeUtils {
         rightChild.setLeft(node);
     }
 
-    private static <T extends Comparable<T> & Serializable> void rotateRight(boolean internal, RedBlackTreeNode<T> leftChild, RedBlackTreeNode<T> node, RedBlackTreeNode<T> parent, RedBlackTreeSet<T> ts) {
+    private static <T extends Comparable<T> & Serializable> void rotateRight(boolean fromCenterToOutside, RedBlackTreeNode<T> leftChild, RedBlackTreeNode<T> node, RedBlackTreeNode<T> parent, RedBlackTreeSet<T> ts) {
         leftChild.setParent(parent);
         if (parent != null) {
-            if (internal) {
+            if (fromCenterToOutside) {
                 parent.setRight(leftChild);
             } else {
                 parent.setLeft(leftChild);
@@ -258,9 +258,8 @@ class BinaryTreeUtils {
         } else if (phantomNode.getRight().isPresent()) {
             phantomChild = (RedBlackTreeNode<T>) phantomNode.getRight().get();
         }
-
         RedBlackTreeNode<T> phantomParent = phantomNode.getParent().get();
-        if (phantomChild != null){
+        if (phantomChild != null) {
             phantomChild.setParent(phantomParent);
         }
         if (phantomParent.getLeft().isPresent() && phantomParent.getLeft().get() == phantomNode) {
@@ -285,15 +284,15 @@ class BinaryTreeUtils {
                 sibling.setColor(BLACK);
                 Optional<RedBlackTreeNode<T>> grandparent = parent.getParent();
                 if (parent.getLeft().isPresent() && parent.getLeft().get() == currentNode) {
-                    boolean internal = grandparent.isPresent()
+                    boolean b = grandparent.isPresent()
                             && grandparent.get().getRight().isPresent()
                             && grandparent.get().getRight().get() == parent;
-                    rotateLeft(internal, sibling, parent, grandparent.orElse(null), ts);
+                    rotateLeft(!b, sibling, parent, grandparent.orElse(null), ts);
                 } else {
-                    boolean internal = grandparent.isPresent()
+                    boolean b = grandparent.isPresent()
                             && grandparent.get().getLeft().isPresent()
                             && grandparent.get().getLeft().get() == parent;
-                    rotateRight(internal, sibling, parent, grandparent.orElse(null), ts);
+                    rotateRight(!b, sibling, parent, grandparent.orElse(null), ts);
                 }
             }
             sibling = sibling(currentNode).get(); // sibling for currentNode has been changed (?)
@@ -325,19 +324,25 @@ class BinaryTreeUtils {
                 sibling = sibling(currentNode).get(); // sibling for currentNode has been changed (?)
                 parent = currentNode.getParent().get(); // parent for currentNode has been changed (?)
                 if (sibling.getColor() == BLACK && parent.getLeft().get() == currentNode
-                        && (sibling.getRight().isPresent() && ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == RED)
-                        && (!sibling.getLeft().isPresent() || ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)) {
+                        && (sibling.getRight().isPresent() && ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == RED)) {
                     sibling.setColor(parent.getColor());
                     parent.setColor(BLACK);
                     ((RedBlackTreeNode<T>) sibling.getRight().get()).setColor(BLACK);
-                    rotateLeft(false, sibling, parent, grandparent(currentNode).orElse(null), ts);
+                    Optional<RedBlackTreeNode<T>> grandparent = grandparent(currentNode);
+                    boolean b = grandparent.isPresent()
+                            && grandparent.get().getRight().isPresent()
+                            && grandparent.get().getRight().get() == parent;
+                    rotateLeft(!b, sibling, parent, grandparent.orElse(null), ts);
                 } else if (sibling.getColor() == BLACK && parent.getRight().get() == currentNode
-                        && (sibling.getLeft().isPresent() && ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == RED)
-                        && (!sibling.getRight().isPresent() || ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) {
+                        && (sibling.getLeft().isPresent() && ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == RED)) {
                     sibling.setColor(parent.getColor());
                     parent.setColor(BLACK);
                     ((RedBlackTreeNode<T>) sibling.getLeft().get()).setColor(BLACK);
-                    rotateRight(false, sibling, parent, grandparent(currentNode).orElse(null), ts);
+                    Optional<RedBlackTreeNode<T>> grandparent = grandparent(currentNode);
+                    boolean b = grandparent.isPresent()
+                            && grandparent.get().getLeft().isPresent()
+                            && grandparent.get().getLeft().get() == parent;
+                    rotateRight(!b, sibling, parent, grandparent.orElse(null), ts);
                 }
             }
         }
