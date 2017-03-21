@@ -252,20 +252,11 @@ class BinaryTreeUtils {
         repaintAndRebalanceOnRemoveRecursively(ts, phantomNode);
 
         //cleaning up phantom node
-        RedBlackTreeNode<T> phantomChild = null;
-        if (phantomNode.getLeft().isPresent()) { //TODO FIXME phantomNode should remain leaf, meaning no child
-            phantomChild = (RedBlackTreeNode<T>) phantomNode.getLeft().get();
-        } else if (phantomNode.getRight().isPresent()) {
-            phantomChild = (RedBlackTreeNode<T>) phantomNode.getRight().get();
-        }
         RedBlackTreeNode<T> phantomParent = phantomNode.getParent().get();
-        if (phantomChild != null) {
-            phantomChild.setParent(phantomParent);
-        }
         if (phantomParent.getLeft().isPresent() && phantomParent.getLeft().get() == phantomNode) {
-            phantomParent.setLeft(phantomChild != null ? phantomChild : null);
+            phantomParent.setLeft(null);
         } else if (phantomParent.getRight().isPresent() && phantomParent.getRight().get() == phantomNode) {
-            phantomParent.setRight(phantomChild != null ? phantomChild : null);
+            phantomParent.setRight(null);
         } else {
             throw new IllegalStateException("we shouldn't get here ever");
         }
@@ -301,7 +292,9 @@ class BinaryTreeUtils {
                     && (!sibling.getLeft().isPresent() || ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)
                     && (!sibling.getRight().isPresent() || ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) { // sibling and its children are black, parent is black
                 sibling.setColor(RED);
+
                 repaintAndRebalanceOnRemoveRecursively(ts, parent);
+
             } else if (sibling.getColor() == BLACK && parent.getColor() == RED
                     && (!sibling.getLeft().isPresent() || ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)
                     && (!sibling.getRight().isPresent() || ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) { // sibling and its children are black, parent is red
