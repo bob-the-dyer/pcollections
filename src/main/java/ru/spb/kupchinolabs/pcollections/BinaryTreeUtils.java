@@ -99,6 +99,7 @@ class BinaryTreeUtils {
         if (!currentNode.getLeft().isPresent() && !currentNode.getRight().isPresent()) { //leaf with no children
             if (parentNode == currentNode) {
                 rootNodeSetter.accept(null);
+                parentNode = null;
             } else if (lastStepLeft) {
                 parentNode.setLeft(null);
             } else {
@@ -235,13 +236,10 @@ class BinaryTreeUtils {
         if (removedNode.getColor() == RED) {
             return;
         }
-        if (removedNode.getColor() == BLACK && currentNode.getColor() == RED) {
-            currentNode.setColor(BLACK);
-            return;
-        }
 
-        // removedNode and currentNode are black, tree has more than single root node
+        // removedNode is black and currentNode can be black or red, tree has more than single root node
 
+        //adding phantom node
         RedBlackTreeNode<T> phantomNode = new RedBlackTreeNode<T>()
                 .setParent(currentNode)
                 .setColor(BLACK);
@@ -253,8 +251,9 @@ class BinaryTreeUtils {
 
         repaintAndRebalanceOnRemoveRecursively(ts, phantomNode);
 
+        //cleaning up phantom node
         RedBlackTreeNode<T> phantomChild = null;
-        if (phantomNode.getLeft().isPresent()) {
+        if (phantomNode.getLeft().isPresent()) { //TODO FIXME phantomNode should remain leaf, meaning no child
             phantomChild = (RedBlackTreeNode<T>) phantomNode.getLeft().get();
         } else if (phantomNode.getRight().isPresent()) {
             phantomChild = (RedBlackTreeNode<T>) phantomNode.getRight().get();
@@ -271,7 +270,7 @@ class BinaryTreeUtils {
         } else {
             throw new IllegalStateException("we shouldn't get here ever");
         }
-
+        phantomNode.setParent(null);
     }
 
     private static <T extends Comparable<T> & Serializable> void repaintAndRebalanceOnRemoveRecursively(RedBlackTreeSet<T> ts, RedBlackTreeNode<T> currentNode) {
@@ -280,7 +279,8 @@ class BinaryTreeUtils {
         } else {
             RedBlackTreeNode<T> sibling = sibling(currentNode).get();
             RedBlackTreeNode<T> parent = currentNode.getParent().get();
-            if (sibling.getColor() == RED) {
+            if (sibling.getColor() == RED) { // case sibling is red
+                assert parent.getColor() == BLACK;
                 parent.setColor(RED);
                 sibling.setColor(BLACK);
                 Optional<RedBlackTreeNode<T>> grandparent = parent.getParent();
@@ -288,61 +288,54 @@ class BinaryTreeUtils {
                     boolean internal = grandparent.isPresent()
                             && grandparent.get().getRight().isPresent()
                             && grandparent.get().getRight().get() == parent;
-                    rotateRight(internal, currentNode, parent, grandparent.orElse(null), ts);
+                    rotateLeft(internal, sibling, parent, grandparent.orElse(null), ts);
                 } else {
                     boolean internal = grandparent.isPresent()
                             && grandparent.get().getLeft().isPresent()
                             && grandparent.get().getLeft().get() == parent;
-                    rotateLeft(internal, currentNode, parent, grandparent.orElse(null), ts);
+                    rotateRight(internal, sibling, parent, grandparent.orElse(null), ts);
                 }
             }
             sibling = sibling(currentNode).get(); // sibling for currentNode has been changed (?)
             parent = currentNode.getParent().get(); // parent for currentNode has been changed (?)
             if (sibling.getColor() == BLACK && parent.getColor() == BLACK
-                    && (sibling.getLeft().isPresent() && ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)
-                    && (sibling.getRight().isPresent() && ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) {
+                    && (!sibling.getLeft().isPresent() || ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)
+                    && (!sibling.getRight().isPresent() || ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) { // sibling and its children are black, parent is black
                 sibling.setColor(RED);
                 repaintAndRebalanceOnRemoveRecursively(ts, parent);
             } else if (sibling.getColor() == BLACK && parent.getColor() == RED
-                    && (sibling.getLeft().isPresent() && ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)
-                    && (sibling.getRight().isPresent() && ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) {
+                    && (!sibling.getLeft().isPresent() || ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)
+                    && (!sibling.getRight().isPresent() || ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) { // sibling and its children are black, parent is red
                 sibling.setColor(RED);
                 parent.setColor(BLACK);
             } else {
                 if (sibling.getColor() == BLACK && parent.getLeft().get() == currentNode
                         && (sibling.getLeft().isPresent() && ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == RED)
-                        && (sibling.getRight().isPresent() && ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) {
+                        && (!sibling.getRight().isPresent() || ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) {
                     sibling.setColor(RED);
                     ((RedBlackTreeNode<T>) sibling.getLeft().get()).setColor(BLACK);
                     rotateRight(true, (RedBlackTreeNode<T>) sibling.getLeft().get(), sibling, parent, ts);
                 } else if (sibling.getColor() == BLACK && parent.getRight().get() == currentNode
                         && (sibling.getRight().isPresent() && ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == RED)
-                        && (sibling.getLeft().isPresent() && ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)) {
+                        && (!sibling.getLeft().isPresent() || ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)) {
                     sibling.setColor(RED);
                     ((RedBlackTreeNode<T>) sibling.getRight().get()).setColor(BLACK);
                     rotateLeft(true, (RedBlackTreeNode<T>) sibling.getRight().get(), sibling, parent, ts);
-                } else {
-//                    throw new IllegalStateException("we shouldn't get here ever");
                 }
                 sibling = sibling(currentNode).get(); // sibling for currentNode has been changed (?)
                 parent = currentNode.getParent().get(); // parent for currentNode has been changed (?)
                 if (sibling.getColor() == BLACK && parent.getLeft().get() == currentNode
                         && (sibling.getRight().isPresent() && ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == RED)
-                        && (sibling.getLeft().isPresent() && ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)) {
-                    //just checking
-                } else if (sibling.getColor() == BLACK && parent.getRight().get() == currentNode
-                        && (sibling.getLeft().isPresent() && ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == RED)
-                        && (sibling.getRight().isPresent() && ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) {
-                    //just checking
-                } else {
-//                    throw new IllegalStateException("we shouldn't get here ever");
-                }
-                sibling.setColor(parent.getColor());
-                parent.setColor(BLACK);
-                if (parent.getLeft().get() == currentNode) {
+                        && (!sibling.getLeft().isPresent() || ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == BLACK)) {
+                    sibling.setColor(parent.getColor());
+                    parent.setColor(BLACK);
                     ((RedBlackTreeNode<T>) sibling.getRight().get()).setColor(BLACK);
                     rotateLeft(false, sibling, parent, grandparent(currentNode).orElse(null), ts);
-                } else {
+                } else if (sibling.getColor() == BLACK && parent.getRight().get() == currentNode
+                        && (sibling.getLeft().isPresent() && ((RedBlackTreeNode<T>) sibling.getLeft().get()).getColor() == RED)
+                        && (!sibling.getRight().isPresent() || ((RedBlackTreeNode<T>) sibling.getRight().get()).getColor() == BLACK)) {
+                    sibling.setColor(parent.getColor());
+                    parent.setColor(BLACK);
                     ((RedBlackTreeNode<T>) sibling.getLeft().get()).setColor(BLACK);
                     rotateRight(false, sibling, parent, grandparent(currentNode).orElse(null), ts);
                 }
@@ -394,12 +387,12 @@ class BinaryTreeUtils {
         }
     }
 
-    static <T extends Comparable<T> & Serializable> String buildWidthTraverseStringPyramith(Queue<RedBlackTreeNode<T>> queue) {
+    static <T extends Comparable<T> & Serializable> String buildWidthTraverseStringPyramidRB(Queue<RedBlackTreeNode<T>> queue) {
         StringBuilder sb = new StringBuilder();
         Queue<RedBlackTreeNode<T>> newQueue = new LinkedBlockingDeque<>();
         while (!queue.isEmpty()) {
             RedBlackTreeNode<T> node = queue.remove();
-            sb.append(node.getValue()).append(node.getColor() == RED ? "R" : "B").append(" ");
+            sb.append(node.getValue()).append("_").append(node.getColor().getShortName()).append(" ");
             if (node.getLeft().isPresent()) {
                 newQueue.offer((RedBlackTreeNode<T>) node.getLeft().get());
             }
@@ -409,7 +402,27 @@ class BinaryTreeUtils {
         }
         sb.append("\n");
         if (!newQueue.isEmpty()) {
-            sb.append(buildWidthTraverseStringPyramith(newQueue));
+            sb.append(buildWidthTraverseStringPyramidRB(newQueue));
+        }
+        return sb.toString();
+    }
+
+    static <T extends Comparable<T> & Serializable> String buildWidthTraverseStringPyramid(Queue<BinaryTreeNode<T>> queue) {
+        StringBuilder sb = new StringBuilder();
+        Queue<BinaryTreeNode<T>> newQueue = new LinkedBlockingDeque<>();
+        while (!queue.isEmpty()) {
+            BinaryTreeNode<T> node = queue.remove();
+            sb.append(node.getValue()).append(" ");
+            if (node.getLeft().isPresent()) {
+                newQueue.offer(node.getLeft().get());
+            }
+            if (node.getRight().isPresent()) {
+                newQueue.offer(node.getRight().get());
+            }
+        }
+        sb.append("\n");
+        if (!newQueue.isEmpty()) {
+            sb.append(buildWidthTraverseStringPyramid(newQueue));
         }
         return sb.toString();
     }
@@ -447,4 +460,13 @@ class BinaryTreeUtils {
             return Optional.empty();
         }
     }
+
+    static <T extends Comparable<T> & Serializable> int size(SimpleSet<T> ts) {
+        final int[] size = {0};
+        ts.forEach(i -> {
+            size[0]++;
+        });
+        return size[0];
+    }
+
 }

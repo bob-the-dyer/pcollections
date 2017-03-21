@@ -116,8 +116,8 @@ abstract public class BasePersistentSetTest {
 
     @Test
     public void stochasticRemoval() {
-        List<Integer> originalElements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        List<Integer> targetElements = Arrays.asList(1, 2, 3, 4, 6, 7, 8, 9, 10);
+        List<Integer> originalElements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+        List<Integer> targetElements = Arrays.asList(1, 2, 3, 4, 6, 7, 8, 9, 10, 11);
 
         final PersistentSet<Integer>[] treeSetArr = new PersistentSet[]{treeSet};
 

@@ -37,9 +37,9 @@ class RedBlackTreeNode<T extends Comparable<T> & Serializable> extends BinaryTre
     public String toString() {
         return "RBTNode{" +
                 "value=" + getValue() +
-                ", parent=" + (parent != null ? parent.getValue() : null) +
-                ", left=" + (getLeft().isPresent() ? getLeft().get().getValue() : null) +
-                ", right=" + (getRight().isPresent() ? getRight().get().getValue() : null) +
+                ", parent=" + (parent != null ? parent.getValue() + "_" + parent.getColor().getShortName() : null) +
+                ", left=" + (getLeft().isPresent() ? getLeft().get().getValue() + "_" + ((RedBlackTreeNode<T>) getLeft().get()).getColor().getShortName() : null) +
+                ", right=" + (getRight().isPresent() ? getRight().get().getValue() + "_" + ((RedBlackTreeNode<T>) getRight().get()).getColor().getShortName() : null) +
                 ", color=" + color +
                 '}';
     }

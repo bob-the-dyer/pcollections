@@ -2,9 +2,10 @@ package ru.spb.kupchinolabs.pcollections;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.cloneObject;
-import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.searchAndRemove;
+import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.*;
 
 /**
  * Created by vladimir-k on 12.03.17.
@@ -25,6 +26,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
             rootNode = new BinaryTreeNode<T>();
             rootNode.setValue(newElement);
             size++;
+            assert size == BinaryTreeUtils.size(this); //TODO remove later
             return true;
         } else {
             BinaryTreeNode<T> newNode = new BinaryTreeNode<T>();
@@ -33,6 +35,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
             if (inserted) {
                 size++;
             }
+            assert size == BinaryTreeUtils.size(this); //TODO remove later
             return inserted;
         }
     }
@@ -40,10 +43,12 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
     @Override
     public boolean remove(T element) {
         if (element == null) throw new NullPointerException("null elements are not supported");
-        boolean removed = searchAndRemove(newRoot -> this.rootNode = newRoot, element, rootNode, rootNode, false, arg -> {});
+        boolean removed = searchAndRemove(newRoot -> this.rootNode = newRoot, element, rootNode, rootNode, false, arg -> {
+        });
         if (removed) {
             size--;
         }
+        assert size == BinaryTreeUtils.size(this); //TODO remove later
         return removed;
     }
 
@@ -56,6 +61,16 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
         return new InOrderTreeSetIterator<T>(rootNode);
     }
 
+    @Override
+    public String toString() {
+        Queue<BinaryTreeNode<T>> queue = new LinkedBlockingQueue<>();
+        if (rootNode != null) {
+            queue.offer(rootNode);
+        }
+        return "BTS{\n" +
+                buildWidthTraverseStringPyramid(queue) +
+                "}";
+    }
 
     //TODO consider adding constructor with Comparator to support elements which do not implement Comparable
     //TODO consider adding equals and hashCode to support collection friendliness
