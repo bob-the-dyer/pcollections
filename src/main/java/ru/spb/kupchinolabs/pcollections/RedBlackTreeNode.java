@@ -19,16 +19,18 @@ class RedBlackTreeNode<T extends Comparable<T> & Serializable> extends BinaryTre
         return Optional.ofNullable(parent);
     }
 
-    void setParent(RedBlackTreeNode<T> parent) {
+    RedBlackTreeNode<T> setParent(RedBlackTreeNode<T> parent) {
         this.parent = parent;
+        return this;
     }
 
     RedBlackTreeNodeColor getColor() {
         return color;
     }
 
-    void setColor(RedBlackTreeNodeColor color) {
+    RedBlackTreeNode<T> setColor(RedBlackTreeNodeColor color) {
         this.color = color;
+        return this;
     }
 
     @Override

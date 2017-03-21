@@ -51,7 +51,21 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
 
     @Override
     public boolean remove(T element) {
-        throw new UnsupportedOperationException("remove on RBTree is not supported yet, use PersistentRedBlackTreeSet instead");
+        if (element == null) throw new NullPointerException("null elements are not supported");
+        boolean removed = searchAndRemove(newRoot -> {
+            rootNode = (RedBlackTreeNode<T>) newRoot;
+            if (rootNode != null) {
+                rootNode.setParent(null);
+            }
+        }, element, rootNode, rootNode, false, arg -> {
+            ((RedBlackTreeNode<T>) arg.removedNode).setParent(null); //TODO consider to remove as looks like GC will remove removedNode anyway
+            repaintAndRebalanceOnRemove(this, (RedBlackTreeNode<T>) arg.removedNode, (RedBlackTreeNode<T>) arg.baseNode);
+            validateTree(this); //TODO later move out to test code
+        });
+        if (removed) {
+            size--;
+        }
+        return removed;
     }
 
     @Override
