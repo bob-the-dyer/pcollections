@@ -28,33 +28,4 @@ public class RedBlackTreeSetTest extends BaseSimpleSetTest {
         });
     }
 
-    @Override
-    @Test(expected = UnsupportedOperationException.class)
-    public void orderingStochastic() {
-        super.orderingStochastic();
-    }
-
-    @Override
-    @Test(expected = UnsupportedOperationException.class)
-    public void removeNull() {
-        super.removeNull();
-    }
-
-    @Override
-    @Test(expected = UnsupportedOperationException.class)
-    public void insertContainsDeleteStochastic() {
-        super.insertContainsDeleteStochastic();
-    }
-
-    @Override
-    @Test(expected = UnsupportedOperationException.class)
-    public void stochasticRemovalOfSingleElement() {
-        super.stochasticRemovalOfSingleElement();
-    }
-
-    @Override
-    @Test(expected = UnsupportedOperationException.class)
-    public void empty() {
-        super.empty();
-    }
 }

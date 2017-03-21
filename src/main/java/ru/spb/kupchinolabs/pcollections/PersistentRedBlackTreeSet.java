@@ -1,7 +1,7 @@
 package ru.spb.kupchinolabs.pcollections;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Iterator;
 
 import static ru.spb.kupchinolabs.pcollections.BinaryTreeUtils.cloneObject;
 
@@ -31,7 +31,7 @@ public class PersistentRedBlackTreeSet<T extends Comparable<T> & Serializable> i
             return this;
         } else {
             T newElement = (T) cloneObject(element);
-            RedBlackTreeSet<T> newTreeSet = buildCopyExcluding(this.treeSet);
+            RedBlackTreeSet<T> newTreeSet = deepCopy(this.treeSet);
             newTreeSet.insert(newElement);
             return new PersistentRedBlackTreeSet<>(newTreeSet);
         }
@@ -42,7 +42,8 @@ public class PersistentRedBlackTreeSet<T extends Comparable<T> & Serializable> i
         if (!this.treeSet.contains(element)) {
             return this;
         } else {
-            RedBlackTreeSet<T> newTreeSet = buildCopyExcluding(this.treeSet, element);
+            RedBlackTreeSet<T> newTreeSet = deepCopy(this.treeSet);
+            newTreeSet.remove(element);
             return new PersistentRedBlackTreeSet<T>(newTreeSet);
         }
     }
@@ -57,13 +58,9 @@ public class PersistentRedBlackTreeSet<T extends Comparable<T> & Serializable> i
         return treeSet.iterator();
     }
 
-    private RedBlackTreeSet<T> buildCopyExcluding(RedBlackTreeSet<T> treeSet, T... excludes) {
+    private RedBlackTreeSet<T> deepCopy(RedBlackTreeSet<T> treeSet) {
         RedBlackTreeSet<T> deepCopy = new RedBlackTreeSet<>();
-        treeSet.forEach(element -> {
-            if (!Arrays.asList(excludes).contains(element)){
-                deepCopy.insert(element);
-            }
-        });
+        treeSet.forEach(deepCopy::insert);
         return deepCopy;
     }
 

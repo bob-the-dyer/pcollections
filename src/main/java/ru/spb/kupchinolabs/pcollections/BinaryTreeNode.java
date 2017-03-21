@@ -16,23 +16,26 @@ class BinaryTreeNode<T extends Comparable<T> & Serializable> implements Serializ
         return Optional.ofNullable(left);
     }
 
-    void setLeft(BinaryTreeNode<T> left) {
+    BinaryTreeNode<T> setLeft(BinaryTreeNode<T> left) {
         this.left = left;
+        return this;
     }
 
     Optional<? extends BinaryTreeNode<T>> getRight() {
         return Optional.ofNullable(right);
     }
 
-    void setRight(BinaryTreeNode<T> right) {
+    BinaryTreeNode<T> setRight(BinaryTreeNode<T> right) {
         this.right = right;
+        return this;
     }
 
     T getValue() {
         return value;
     }
 
-    void setValue(T value) {
+    BinaryTreeNode<T> setValue(T value) {
         this.value = value;
+        return this;
     }
 }

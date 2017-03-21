@@ -14,7 +14,7 @@ import static ru.spb.kupchinolabs.pcollections.RedBlackTreeNodeColor.BLACK;
 public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements SimpleSet<T>, Serializable {
 
     RedBlackTreeNode<T> rootNode;
-    private int size = 0;
+    int size = 0;
 
     @Override
     public boolean contains(T element) {
@@ -34,6 +34,7 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
             size++;
             repaintAndRebalanceOnInsert(this, rootNode);
             validateTree(this); //TODO later move out to test code
+//            assert size == BinaryTreeUtils.size(this);
             return true;
         } else {
             RedBlackTreeNode<T> newNode = new RedBlackTreeNode<T>();
@@ -45,13 +46,29 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
             if (inserted) {
                 size++;
             }
+//            assert size == BinaryTreeUtils.size(this);
             return inserted;
         }
     }
 
     @Override
     public boolean remove(T element) {
-        throw new UnsupportedOperationException("remove on RBTree is not supported yet, use PersistentRedBlackTreeSet instead");
+        if (element == null) throw new NullPointerException("null elements are not supported");
+        boolean removed = searchAndRemove(newRoot -> {
+            rootNode = (RedBlackTreeNode<T>) newRoot;
+            if (rootNode != null) {
+                rootNode.setParent(null);
+            }
+        }, element, rootNode, rootNode, false, arg -> {
+            ((RedBlackTreeNode<T>) arg.removedNode).setParent(null); //TODO consider to remove as looks like GC will remove removedNode anyway
+            repaintAndRebalanceOnRemove(this, (RedBlackTreeNode<T>) arg.removedNode, (RedBlackTreeNode<T>) arg.baseNode);
+            validateTree(this); //TODO later move out to test code
+        });
+        if (removed) {
+            size--;
+        }
+//        assert size == BinaryTreeUtils.size(this);
+        return removed;
     }
 
     @Override
@@ -66,12 +83,12 @@ public class RedBlackTreeSet<T extends Comparable<T> & Serializable> implements 
 
     @Override
     public String toString() {
-        Queue<RedBlackTreeNode<T>> stack = new LinkedBlockingQueue<>();
+        Queue<RedBlackTreeNode<T>> queue = new LinkedBlockingQueue<>();
         if (rootNode != null) {
-            stack.offer(rootNode);
+            queue.offer(rootNode);
         }
         return "RBTS{\n" +
-                buildWidthTraverseStringPyramith(stack) +
+                buildWidthTraverseStringPyramidRB(queue) +
                 "}";
     }
 

@@ -19,26 +19,27 @@ class RedBlackTreeNode<T extends Comparable<T> & Serializable> extends BinaryTre
         return Optional.ofNullable(parent);
     }
 
-    void setParent(RedBlackTreeNode<T> parent) {
+    RedBlackTreeNode<T> setParent(RedBlackTreeNode<T> parent) {
         this.parent = parent;
+        return this;
     }
 
     RedBlackTreeNodeColor getColor() {
         return color;
     }
 
-    void setColor(RedBlackTreeNodeColor color) {
+    RedBlackTreeNode<T> setColor(RedBlackTreeNodeColor color) {
         this.color = color;
+        return this;
     }
 
     @Override
     public String toString() {
         return "RBTNode{" +
-                "value=" + getValue() +
-                ", parent=" + (parent != null ? parent.getValue() : null) +
-                ", left=" + (getLeft().isPresent() ? getLeft().get().getValue() : null) +
-                ", right=" + (getRight().isPresent() ? getRight().get().getValue() : null) +
-                ", color=" + color +
+                getValue() + "_" + getColor().getShortName() +
+                ", parent=" + (parent != null ? parent.getValue() + "_" + parent.getColor().getShortName() : null) +
+                ", left=" + (getLeft().isPresent() ? getLeft().get().getValue() + "_" + ((RedBlackTreeNode<T>) getLeft().get()).getColor().getShortName() : null) +
+                ", right=" + (getRight().isPresent() ? getRight().get().getValue() + "_" + ((RedBlackTreeNode<T>) getRight().get()).getColor().getShortName() : null) +
                 '}';
     }
 }

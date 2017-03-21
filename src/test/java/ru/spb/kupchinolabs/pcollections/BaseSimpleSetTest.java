@@ -33,6 +33,8 @@ abstract public class BaseSimpleSetTest {
 
             assertEquals(initialElements, traversedElements);
 
+            Collections.shuffle(initialElements);
+
             initialElements.forEach(treeSet::remove);
             assertEquals(0, treeSet.size());
         }
@@ -106,16 +108,35 @@ abstract public class BaseSimpleSetTest {
 
     @Test
     public void stochasticRemovalOfSingleElement() {
-        List<Integer> initialElements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        List<Integer> expectedElements = Arrays.asList(1, 2, 3, 4, 6, 7, 8, 9, 10);
+        List<Integer> initialElements = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+        List<Integer> expectedElements = Arrays.asList(1, 2, 3, 4, 6, 7, 8, 9, 10, 11);
         for (int i = 0; i < 10000; i++) {
             Collections.shuffle(initialElements);
+            Collections.sort(expectedElements);
             initialElements.forEach(treeSet::insert);
+            System.out.println(">>> initial tree");
+            System.out.println(treeSet);
+            assertEquals(initialElements.size(), treeSet.size());
             assertTrue(treeSet.remove(5));
+            assertEquals(expectedElements.size(), treeSet.size());
+            assertFalse(treeSet.contains(5));
+            System.out.println(">>> tree after deletion of 5");
+            System.out.println(treeSet);
             List<Integer> traversedElements = new ArrayList<>();
             treeSet.forEach(traversedElements::add);
             assertEquals(expectedElements, traversedElements);
-            expectedElements.forEach(treeSet::remove);
+            final int[] countDown = {expectedElements.size()};
+            Collections.shuffle(expectedElements);
+            expectedElements.forEach((element) -> {
+                System.out.println("trying to remove " + element);
+                assertEquals(countDown[0], treeSet.size());
+                treeSet.remove(element);
+                System.out.println(">>> tree after deletion of " + element);
+                System.out.println(treeSet);
+                countDown[0]--;
+                assertEquals(countDown[0], treeSet.size());
+            });
+            assertEquals(0, treeSet.size());
         }
     }
 
