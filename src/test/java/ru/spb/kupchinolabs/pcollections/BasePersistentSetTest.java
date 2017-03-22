@@ -17,29 +17,32 @@ abstract public class BasePersistentSetTest {
     @Test
     public void orderingStochastic() {
         final PersistentSet<Integer>[] treeSetArr = new PersistentSet[]{treeSet};
+        Random random = new Random();
 
-        assertEquals(0, treeSetArr[0].size());
-        List<Integer> initialElements = new ArrayList<>();
-        new Random().ints(1000, 0, 1000).forEach(e -> {
-            if (!initialElements.contains(e)) initialElements.add(e);
-            treeSetArr[0] = treeSetArr[0].insert(e);
-        });
+        for (int i = 0; i < 10; i++) {
+            assertEquals(0, treeSetArr[0].size());
+            List<Integer> initialElements = new ArrayList<>();
+            random.ints(1000, 0, 1000).forEach(e -> {
+                if (!initialElements.contains(e)) initialElements.add(e);
+                treeSetArr[0] = treeSetArr[0].insert(e);
+            });
 
-        assertEquals(initialElements.size(), treeSetArr[0].size());
+            assertEquals(initialElements.size(), treeSetArr[0].size());
 
-        Collections.sort(initialElements);
+            Collections.sort(initialElements);
 
-        List<Integer> traversedElements = new ArrayList<>();
-        treeSetArr[0].forEach(traversedElements::add);
+            List<Integer> traversedElements = new ArrayList<>();
+            treeSetArr[0].forEach(traversedElements::add);
 
-        assertEquals(initialElements, traversedElements);
+            assertEquals(initialElements, traversedElements);
 
-        Collections.shuffle(initialElements);
+            Collections.shuffle(initialElements);
 
-        initialElements.forEach(e -> {
-            treeSetArr[0] = treeSetArr[0].remove(e);
-        });
-        assertEquals(0, treeSetArr[0].size());
+            initialElements.forEach(e -> {
+                treeSetArr[0] = treeSetArr[0].remove(e);
+            });
+            assertEquals(0, treeSetArr[0].size());
+        }
     }
 
     @Test(expected = NullPointerException.class)
@@ -128,6 +131,7 @@ abstract public class BasePersistentSetTest {
             assertEquals(0, treeSetArr[0].size());
 
             Collections.shuffle(originalElements);
+            Collections.sort(targetElements);
 
             originalElements.forEach(e -> {
                 treeSetArr[0] = treeSetArr[0].insert(e);
@@ -140,6 +144,7 @@ abstract public class BasePersistentSetTest {
 
             assertEquals(targetElements, traversedElements);
 
+            Collections.shuffle(targetElements);
             targetElements.forEach(e -> {
                 treeSetArr[0] = treeSetArr[0].remove(e);
             });

@@ -26,7 +26,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
             rootNode = new BinaryTreeNode<T>();
             rootNode.setValue(newElement);
             size++;
-            assert size == BinaryTreeUtils.size(this); //TODO remove later
+//            assert size == BinaryTreeUtils.size(this);
             return true;
         } else {
             BinaryTreeNode<T> newNode = new BinaryTreeNode<T>();
@@ -35,7 +35,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
             if (inserted) {
                 size++;
             }
-            assert size == BinaryTreeUtils.size(this); //TODO remove later
+//            assert size == BinaryTreeUtils.size(this);
             return inserted;
         }
     }
@@ -48,7 +48,7 @@ public class BinaryTreeSet<T extends Comparable<T> & Serializable> implements Si
         if (removed) {
             size--;
         }
-        assert size == BinaryTreeUtils.size(this); //TODO remove later
+//        assert size == BinaryTreeUtils.size(this);
         return removed;
     }
 
