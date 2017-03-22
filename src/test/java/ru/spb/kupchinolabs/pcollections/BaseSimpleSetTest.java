@@ -17,11 +17,13 @@ abstract public class BaseSimpleSetTest {
     @Test
     public void orderingStochastic() {
         assertEquals(0, treeSet.size());
+        Random random = new Random();
+
         for (int i = 0; i < 1000; i++) {
             List<Integer> initialElements = new ArrayList<>();
-            new Random().ints(1000, 0, 1000).forEach(random -> {
-                if (!initialElements.contains(random)) initialElements.add(random);
-                treeSet.insert(random);
+            random.ints(1000, 0, 1000).forEach(e -> {
+                if (!initialElements.contains(e)) initialElements.add(e);
+                treeSet.insert(e);
             });
 
             assertEquals(initialElements.size(), treeSet.size());
@@ -114,25 +116,25 @@ abstract public class BaseSimpleSetTest {
             Collections.shuffle(initialElements);
             Collections.sort(expectedElements);
             initialElements.forEach(treeSet::insert);
-            System.out.println(">>> initial tree");
-            System.out.println(treeSet);
+            //System.out.println(">>> initial tree");
+            //System.out.println(treeSet);
             assertEquals(initialElements.size(), treeSet.size());
             assertTrue(treeSet.remove(5));
             assertEquals(expectedElements.size(), treeSet.size());
             assertFalse(treeSet.contains(5));
-            System.out.println(">>> tree after deletion of 5");
-            System.out.println(treeSet);
+            //System.out.println(">>> tree after deletion of 5");
+            //System.out.println(treeSet);
             List<Integer> traversedElements = new ArrayList<>();
             treeSet.forEach(traversedElements::add);
             assertEquals(expectedElements, traversedElements);
             final int[] countDown = {expectedElements.size()};
             Collections.shuffle(expectedElements);
             expectedElements.forEach((element) -> {
-                System.out.println("trying to remove " + element);
+                //System.out.println("trying to remove " + element);
                 assertEquals(countDown[0], treeSet.size());
                 treeSet.remove(element);
-                System.out.println(">>> tree after deletion of " + element);
-                System.out.println(treeSet);
+                //System.out.println(">>> tree after deletion of " + element);
+                //System.out.println(treeSet);
                 countDown[0]--;
                 assertEquals(countDown[0], treeSet.size());
             });

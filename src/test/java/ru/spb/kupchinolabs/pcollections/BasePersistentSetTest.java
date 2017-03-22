@@ -33,6 +33,9 @@ abstract public class BasePersistentSetTest {
         treeSetArr[0].forEach(traversedElements::add);
 
         assertEquals(initialElements, traversedElements);
+
+        Collections.shuffle(initialElements);
+
         initialElements.forEach(e -> {
             treeSetArr[0] = treeSetArr[0].remove(e);
         });

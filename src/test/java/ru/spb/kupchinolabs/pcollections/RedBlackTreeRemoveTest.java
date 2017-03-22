@@ -14,14 +14,14 @@ public class RedBlackTreeRemoveTest {
     @Test
     public void trivialRebalanceAndRepaintOnRemovingRed() {
         RedBlackTreeSet<Integer> ts = new RedBlackTreeSet<>();
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.rootNode = (RedBlackTreeNode<Integer>) new RedBlackTreeNode<Integer>()
                 .setColor(BLACK)
                 .setValue(3);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         RedBlackTreeNode<Integer> _1B = (RedBlackTreeNode<Integer>) new RedBlackTreeNode<Integer>()
@@ -38,7 +38,7 @@ public class RedBlackTreeRemoveTest {
 
         ts.rootNode.setRight(_5B);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         RedBlackTreeNode<Integer> _0R = (RedBlackTreeNode<Integer>) new RedBlackTreeNode<Integer>()
@@ -47,7 +47,7 @@ public class RedBlackTreeRemoveTest {
 
         _1B.setLeft(_0R);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         RedBlackTreeNode<Integer> _2R = (RedBlackTreeNode<Integer>) new RedBlackTreeNode<Integer>()
@@ -56,29 +56,29 @@ public class RedBlackTreeRemoveTest {
 
         _1B.setRight(_2R);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.size = 5;
 
         ts.remove(0);
-        System.out.println(ts);
+        //System.out.println(ts);
 
         ts.remove(2);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
     public void removingBlackNodeWithRedParent() {
         RedBlackTreeSet<Integer> ts = new RedBlackTreeSet<>();
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.rootNode = (RedBlackTreeNode<Integer>) new RedBlackTreeNode<Integer>()
                 .setColor(BLACK)
                 .setValue(3);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         RedBlackTreeNode<Integer> _1R = (RedBlackTreeNode<Integer>) new RedBlackTreeNode<Integer>()
@@ -110,17 +110,17 @@ public class RedBlackTreeRemoveTest {
 
         ts.size = 5;
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.remove(2);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
     public void removeRoot() {
         RedBlackTreeSet<Integer> ts = new RedBlackTreeSet<>();
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.rootNode = (RedBlackTreeNode<Integer>) new RedBlackTreeNode<Integer>()
@@ -129,17 +129,17 @@ public class RedBlackTreeRemoveTest {
 
         ts.size = 1;
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.remove(3);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
     public void removeRedChildFromLeft() {
         RedBlackTreeSet<Integer> ts = new RedBlackTreeSet<>();
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.rootNode = (RedBlackTreeNode<Integer>) new RedBlackTreeNode<Integer>()
@@ -154,17 +154,17 @@ public class RedBlackTreeRemoveTest {
 
         ts.size = 2;
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.remove(1);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
     public void removeRedChildFromRight() {
         RedBlackTreeSet<Integer> ts = new RedBlackTreeSet<>();
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.rootNode = (RedBlackTreeNode<Integer>) new RedBlackTreeNode<Integer>()
@@ -184,11 +184,11 @@ public class RedBlackTreeRemoveTest {
 
         ts.size = 3;
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.remove(5);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
@@ -225,13 +225,13 @@ public class RedBlackTreeRemoveTest {
         _15R.setLeft(_12B);
         _15R.setRight(_20B);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.size = 5;
 
         ts.remove(5);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
@@ -268,13 +268,13 @@ public class RedBlackTreeRemoveTest {
         _15R.setLeft(_12B);
         _15R.setRight(_20B);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.size = 5;
 
         ts.remove(30);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
@@ -298,13 +298,13 @@ public class RedBlackTreeRemoveTest {
 
         ts.rootNode.setRight(_15R);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.size = 3;
 
         ts.remove(5);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
@@ -328,13 +328,13 @@ public class RedBlackTreeRemoveTest {
 
         ts.rootNode.setRight(_15B);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.size = 3;
 
         ts.remove(15);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
@@ -365,13 +365,13 @@ public class RedBlackTreeRemoveTest {
 
         _20B.setLeft(_15R);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.size = 4;
 
         ts.remove(5);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
@@ -402,13 +402,13 @@ public class RedBlackTreeRemoveTest {
 
         _5B.setRight(_7R);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.size = 4;
 
         ts.remove(20);
-        System.out.println(ts);
+        //System.out.println(ts);
     }
 
     @Test
@@ -488,17 +488,17 @@ public class RedBlackTreeRemoveTest {
         _10B.setLeft(_9R);
         _10B.setRight(_11R);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.size = 11;
 
         ts.remove(5);
         assertEquals(10, ts.size());
-        System.out.println(ts);
+        //System.out.println(ts);
 
         ts.remove(7);
-        System.out.println(ts);
+        //System.out.println(ts);
         assertEquals(9, ts.size());
     }
 
@@ -570,14 +570,14 @@ public class RedBlackTreeRemoveTest {
 
         ts.size = 9;
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.remove(10);
-        System.out.println(ts);
+        //System.out.println(ts);
 
         ts.remove(1);
-        System.out.println(ts);
+        //System.out.println(ts);
 
     }
 
@@ -658,14 +658,14 @@ public class RedBlackTreeRemoveTest {
         _10R.setLeft(_9R);
         _10R.setRight(_11R);
 
-        System.out.println(ts);
+        //System.out.println(ts);
         validateTree(ts);
 
         ts.size = 11;
 
         ts.remove(8);
         assertEquals(10, ts.size());
-        System.out.println(ts);
+        //System.out.println(ts);
 
     }
 
